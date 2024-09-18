@@ -33,11 +33,11 @@ struct TabsView: View {
               }
               .scrollTargetLayout()
             }
+            .scrollPosition(id: $store.selection.sending(\.onSelectionChanged))
+            .defaultScrollAnchor(.trailing)
+            .scrollTargetBehavior(.paging)
+            .animation(.easeInOut, value: store.selection)
           }
-          .scrollPosition(id: $store.selection.sending(\.onSelectionChanged))
-          .defaultScrollAnchor(.trailing)
-          .scrollTargetBehavior(.paging)
-          .animation(.easeInOut, value: store.selection)
           .tabItem {
             Image("icon-home")
           }
