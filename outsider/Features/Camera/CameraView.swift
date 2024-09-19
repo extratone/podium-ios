@@ -25,6 +25,22 @@ struct CameraView: View {
         .ignoresSafeArea()
       
       VStack {
+        if store.image != nil {
+          HStack {
+            Spacer()
+            
+            Button {
+              store.send(.reset)
+            } label: {
+              Image("icon-close")
+                .resizable()
+                .frame(width: 32, height: 32)
+                .foregroundStyle(.white)
+            }
+          }
+          .padding()
+        }
+        
         Spacer()
         
         HStack {
@@ -40,15 +56,47 @@ struct CameraView: View {
           
           Spacer()
           
-          Button {
-            store.send(.send)
-          } label: {
+          if store.image == nil {
+            Button {
+              
+            } label: {
+              Circle()
+                .frame(width: 82, height: 82)
+                .foregroundStyle(.white)
+            }
+          } else {
             HStack {
-              Text("Send")
+              Button {
+                store.send(.send)
+              } label: {
+                HStack(spacing: 0) {
+                  Text("Add story")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.black)
+                  
+                  Image("icon-send")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(.black)
+                }
+                .padding(.vertical, 8)
+                .padding(.leading, 16)
+                .padding(.trailing, 8)
+                .background(.white)
+                .clipShape(Capsule())
+              }
             }
           }
+          
+          Spacer()
+          
+          VStack {
+            
+          }
+          .frame(width: 24, height: 24)
+          .padding(16)
         }
-        .padding()
+        .padding(48)
       }
     }
   }
@@ -56,7 +104,7 @@ struct CameraView: View {
 
 #Preview {
   CameraView(
-    store: Store(initialState: Camera.State(  
+    store: Store(initialState: Camera.State(
       currentUser: Mocks.user
     )) {
       Camera()

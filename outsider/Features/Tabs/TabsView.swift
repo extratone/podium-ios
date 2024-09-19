@@ -19,6 +19,7 @@ struct TabsView: View {
             ScrollView(.horizontal, showsIndicators: false) {
               HStack(spacing: 0) {
                 CameraView(store: store.scope(state: \.camera, action: \.camera))
+                  .toolbarBackground(Color.colorBase, for: .tabBar)
                   .frame(
                     width: geometry.size.width
                   )

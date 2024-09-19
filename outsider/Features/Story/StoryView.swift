@@ -55,7 +55,7 @@ struct StoryView: View {
               .foregroundColor(.colorBackgroundPrimary)
           }
           
-          VStack(alignment: .leading) {
+          VStack(alignment: .leading, spacing: 0) {
             if let displayName = store.selectedUser.display_name {
               Text(displayName)
                 .foregroundStyle(.white)
@@ -66,6 +66,7 @@ struct StoryView: View {
               .foregroundStyle(.white)
               .fontWeight(.medium)
               .foregroundStyle(.colorTextSecondary)
+              .font(.subheadline)
           }
           
           Spacer()
@@ -99,7 +100,7 @@ struct StoryView: View {
   StoryView(
     store: Store(initialState: Story.State(
       currentUser: Mocks.user,
-      stories: [Mocks.user: [Mocks.story, Mocks.story]],
+      stories: [Mocks.user: [Mocks.story]],
       selectedUser: Mocks.user
     )) {
       Story()

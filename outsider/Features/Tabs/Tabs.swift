@@ -112,6 +112,17 @@ struct Tabs {
       case .explore:
         return .none
         
+      case .camera(.send):
+        state.selection = 1
+        state.home.isLoading = true
+        return .none
+        
+      case .camera(.didSend(.success(let story))):
+        state.home.isLoading = false
+        return .run { send in
+          await send(.home(.stories(.fetchStories)))
+        }
+        
       case .camera:
         return .none
         

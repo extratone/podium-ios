@@ -26,13 +26,22 @@ struct Camera {
     case didImageSelect(UIImage?)
     case send
     case didSend(Result<StoryModel, Error>)
+    case reset
   }
   
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .reset:
+        state.image = nil
+        state.imageSelection = nil
+        return .none
+        
       case .send:
-        return .run { [currentUser = state.currentUser, image = state.image] send in
+        let image = state.image
+        state.imageSelection = nil
+        state.image = nil
+        return .run { [currentUser = state.currentUser] send in
           do {
             let storyUuid = UUID()
             
