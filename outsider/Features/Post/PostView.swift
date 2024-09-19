@@ -113,6 +113,8 @@ struct PostView: View {
           }
         }
       }
+      .disabled(store.isPending)
+      .opacity(store.isPending ? 0.4 : 1)
       
       HStack {
         HStack(spacing: 4) {
@@ -193,6 +195,8 @@ struct PostView: View {
       .padding(.top, 2)
       .padding(.bottom, 4)
       .padding(.leading, 60)
+      .disabled(store.isPending)
+      .opacity(store.isPending ? 0.4 : 1)
     }
   }
 }

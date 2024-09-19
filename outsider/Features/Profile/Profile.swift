@@ -24,10 +24,12 @@ struct Profile {
   struct State: Equatable {
     var currentUser: UserModel
     var user: UserModel
+    var displayName: String = ""
     var posts: IdentifiedArrayOf<Post.State> = []
     var tempAvatar: UIImage?
     var imageSelection: PhotosPickerItem?
     var selectedTabIndex = Tabs.posts
+    var isPending = false
     var isCurrent: Bool {
       return currentUser.uuid == user.uuid
     }
@@ -43,6 +45,12 @@ struct Profile {
     case didFetchProfile(Result<(UserModel, [PostModel]), Error>)
     case presentComments(PostModel)
     case presentProfile(UserModel)
+    case onDisplayNameChanged(String)
+    case setDisplayName
+    case follow(UUID)
+    case didFollow(Result<UUID, Error>)
+    case unfollow(UUID)
+    case didUnfollow(Result<UUID, Error>)
     
     // Sub actions
     case posts(IdentifiedActionOf<Post>)
@@ -51,6 +59,78 @@ struct Profile {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .follow(let uuid):
+        state.isPending = true
+        var following = state.currentUser.following
+        following.append(uuid)
+        return .run { [following = following, currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("users")
+              .update(["following": following])
+              .eq("uuid", value: currentUser.uuid)
+              .execute()
+            
+            await send(.didFollow(.success(uuid)))
+          } catch {
+            await send(.didFollow(.failure(error)))
+          }
+        }
+        
+      case .didFollow(.success(let uuid)):
+        state.currentUser.following.append(uuid)
+        state.isPending = false
+        return .none
+        
+      case .didFollow(.failure(let error)):
+        state.isPending = false
+        print(error)
+        return .none
+        
+      case .unfollow(let uuid):
+        state.isPending = true
+        var following = state.currentUser.following
+        following.removeAll(where: { $0 == uuid })
+        return .run { [following = following, currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("users")
+              .update(["following": following])
+              .eq("uuid", value: currentUser.uuid)
+              .execute()
+            
+            await send(.didUnfollow(.success(uuid)))
+          } catch {
+            await send(.didUnfollow(.failure(error)))
+          }
+        }
+        
+      case .didUnfollow(.success(_)):
+        state.isPending = false
+        return .none
+        
+      case .didUnfollow(.failure(let error)):
+        state.isPending = false
+        print(error)
+        return .none
+        
+      case .setDisplayName:
+        return .run { [displayName = state.displayName, currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("users")
+              .update(["display_name": displayName])
+              .eq("uuid", value: currentUser.uuid)
+              .execute()
+          } catch {
+            print(error)
+          }
+        }
+        
+      case .onDisplayNameChanged(let displayName):
+        state.displayName = displayName
+        return .none
+        
       case .presentProfile(_):
         return .none
         
@@ -58,6 +138,7 @@ struct Profile {
         return .none
         
       case .initialize:
+        state.displayName = state.user.display_name ?? ""
         return .run { send in
           await send(.fetchProfile)
         }
@@ -67,7 +148,15 @@ struct Profile {
           do {
             let user: UserModel = try await supabase
               .from("users")
-              .select()
+              .select(
+                """
+                  uuid,
+                  username,
+                  display_name,
+                  avatar_url,
+                  following
+                """
+              )
               .eq("uuid", value: user.uuid)
               .limit(1)
               .single()

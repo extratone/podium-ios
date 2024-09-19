@@ -30,7 +30,7 @@ struct SettingsView: View {
       } header: {
         Text("Podium")
       } footer: {
-        Text("Version 0.1b01")
+        Text("Version 1.0b2")
       }
     }
     .navigationTitle("Settings")

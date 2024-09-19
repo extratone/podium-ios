@@ -48,9 +48,15 @@ struct HomeView: View {
               }
               .padding(.top, 10)
               .padding(.bottom, 72)
-              .animation(.spring(), value: store.posts)
+//              .animation(.spring(), value: store.posts)
             }
             .scrollDismissesKeyboard(.interactively)
+            
+            VStack {
+              Spacer()
+              SendView(store: store.scope(state: \.send, action: \.send))
+            }
+            .adaptsToKeyboard()
           }
         }
         .toolbar {
@@ -67,12 +73,6 @@ struct HomeView: View {
         case let .profile(store):
           ProfileView(store: store)
         }
-      }
-      
-      VStack {
-        Spacer()
-        
-        SendView(store: store.scope(state: \.send, action: \.send))
       }
     }
     .onAppear {

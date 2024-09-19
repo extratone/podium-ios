@@ -64,25 +64,24 @@ struct ProfileView: View {
             }
             
             VStack(alignment: .leading, spacing: 0) {
-              if let displayName = store.user.display_name {
-                Text(displayName)
-                  .font(.title3)
-                  .fontWeight(.medium)
-                  .foregroundStyle(.colorTextPrimary)
-              } else if store.isCurrent {
-                Button {
-                  
-                } label: {
-                  HStack(spacing: 4) {
-                    Text("Display name")
-                      .fontWeight(.medium)
-                      .foregroundStyle(.colorTextPrimary)
-                    
-                    Image("icon-edit")
-                      .resizable()
-                      .frame(width: 18, height: 18)
-                      .foregroundStyle(.colorTextPrimary)
-                  }
+              if store.isCurrent {
+                TextField(
+                  "Display name",
+                  text: $store.displayName.sending(\.onDisplayNameChanged)
+                )
+                .submitLabel(.done)
+                .font(.title3)
+                .fontWeight(.medium)
+                .foregroundStyle(.colorTextPrimary)
+                .onSubmit {
+                  store.send(.setDisplayName)
+                }
+              } else {
+                if !store.displayName.isEmpty {
+                  Text(store.displayName)
+                    .font(.title3)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.colorTextPrimary)
                 }
               }
               
@@ -99,8 +98,29 @@ struct ProfileView: View {
             .fontWeight(.medium)
           
           HStack(spacing: 12) {
-            Text("**48** followers")
-            Text("**248** following")
+            Text("**\(store.user.following.count)** following")
+          }
+          
+          if !store.isCurrent {
+            Button {
+              if store.currentUser.following.contains(store.user.uuid) {
+                store.send(.unfollow(store.user.uuid))
+              } else {
+                store.send(.follow(store.user.uuid))
+              }
+            } label: {
+              HStack {
+                Spacer()
+                if store.currentUser.following.contains(store.user.uuid) {
+                  Text("Unfollow")
+                } else {
+                  Text("Follow")
+                }
+                Spacer()
+              }
+            }
+            .buttonStyle(PrimarySmallButton())
+            .disabled(store.isPending)
           }
         }
         .padding(.horizontal)

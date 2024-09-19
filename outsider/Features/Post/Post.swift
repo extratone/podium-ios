@@ -17,6 +17,7 @@ struct Post {
     var id: UUID { post.uuid }
     let currentUser: UserModel
     var post: PostModel
+    var isPending = false
     var isLiked: Bool {
       if let likes = post.likes {
         return likes.contains(where: { $0.liked_by == currentUser.uuid })
@@ -99,6 +100,7 @@ struct Post {
         return .none
         
       case .delete:
+        state.isPending = true
         return .run { [post = state.post] send in
           do {
             try await supabase
@@ -136,9 +138,11 @@ struct Post {
         }
         
       case .didDelete(.success(_)):
+        state.isPending = false
         return .none
         
       case .didDelete(.failure(let error)):
+        state.isPending = false
         print(error)
         return .none
       }

@@ -23,7 +23,7 @@ struct ExploreView: View {
       List {
         Section {
           HStack {
-            Image("dummy-avatar")
+            Image("icon-search")
               .resizable()
               .scaledToFill()
               .frame(width: 42, height: 42)

@@ -24,6 +24,11 @@ struct Send {
     var isFormDisabled: Bool {
       isPending || (prompt.isEmpty && tempImage == nil)
     }
+    var focusedField: Field?
+    
+    enum Field: String, Hashable {
+      case send
+    }
   }
   
   enum Action {
@@ -33,6 +38,7 @@ struct Send {
     case imageSelectionChanged(PhotosPickerItem?)
     case didImageSelect(UIImage?)
     case clearImages
+    case setFocusedField(State.Field?)
     
     // Sub actions
   }
@@ -40,6 +46,10 @@ struct Send {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .setFocusedField(let field):
+        state.focusedField = field
+        return .none
+        
       case .clearImages:
         state.imageSelection = nil
         state.tempImage = nil
@@ -65,7 +75,6 @@ struct Send {
         state.isPending = true
         let prompt = state.prompt
         let tempImage = state.tempImage
-        let imageSelection = state.imageSelection
         state.prompt = ""
         state.tempImage = nil
         state.imageSelection = nil

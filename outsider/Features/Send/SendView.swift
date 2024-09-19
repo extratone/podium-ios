@@ -11,6 +11,7 @@ import PhotosUI
 
 struct SendView: View {
   @Bindable var store: StoreOf<Send>
+  @FocusState var focusedField: Send.State.Field?
   
   var body: some View {
     HStack(alignment: .bottom, spacing: 4) {
@@ -33,6 +34,7 @@ struct SendView: View {
             .foregroundStyle(.colorTextSecondary),
           axis: .vertical
         )
+        .focused($focusedField, equals: .send)
         .disabled(store.isPending)
         .foregroundStyle(.white)
         .onChange(of: store.isPending) { oldValue, newValue in
@@ -65,7 +67,9 @@ struct SendView: View {
           .frame(height: 120)
         }
       }
+      .bind($store.focusedField.sending(\.setFocusedField), to: $focusedField)
       .padding(.vertical, 16)
+      
       
       Button {
         store.send(.send)
@@ -94,8 +98,7 @@ struct SendView: View {
 #Preview {
   SendView(
     store: Store(initialState: Send.State(
-      currentUser: Mocks.user,
-      tempImage: UIImage(named: "dummy-avatar")
+      currentUser: Mocks.user
     )) {
       Send()
     }

@@ -42,7 +42,8 @@ struct Username {
                 uuid: uuid,
                 username: username,
                 display_name: nil,
-                avatar_url: nil
+                avatar_url: nil,
+                following: []
               ))
               .select()
               .single()

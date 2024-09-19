@@ -88,6 +88,24 @@ struct StoryView: View {
         }
         
         Spacer()
+        
+        HStack {
+          Spacer()
+          
+          if store.selectedStory?.author.uuid == store.currentUser.uuid {
+            HStack {
+              Image("icon-views")
+                .resizable()
+                .frame(width: 24, height: 24)
+                .foregroundStyle(.white)
+              
+              Text("\(store.selectedStory?.stats?.count ?? 0) views")
+                .foregroundStyle(.white)
+                .fontWeight(.medium)
+            }
+          }
+        }
+        .padding()
       }
       .onAppear {
         store.send(.initialize)

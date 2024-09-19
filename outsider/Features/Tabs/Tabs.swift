@@ -10,6 +10,13 @@ import ComposableArchitecture
 
 @Reducer
 struct Tabs {
+  enum TabSelection: String {
+    case home
+    case explore
+    case messages
+    case currentProfile
+  }
+  
   @Dependency(\.supabase) var supabase
   
   @ObservableState
@@ -18,6 +25,7 @@ struct Tabs {
     var bannerData = BannerModifier.BannerData(title: "", detail: "", type: .Info)
     var showBanner = false
     var selection: Int?
+    var tabSelection: TabSelection = .home
     
     // Sub states
     var camera: Camera.State
@@ -32,6 +40,7 @@ struct Tabs {
     case bannerDataChanged(BannerModifier.BannerData)
     case handleBadSession
     case onSelectionChanged(Int?)
+    case onTabSelectionChanged(TabSelection)
     
     // Sub actions
     case camera(Camera.Action)
@@ -45,6 +54,10 @@ struct Tabs {
       switch action {
       case .onSelectionChanged(let selection):
         state.selection = selection
+        return .none
+        
+      case .onTabSelectionChanged(let tabSelection):
+        state.tabSelection = tabSelection
         return .none
         
       case .handleBadSession:
@@ -106,6 +119,12 @@ struct Tabs {
         state.selection = 0
         return .none
         
+      case .home(.path(.element(_, .profile(.didFollow(.success(let uuid)))))):
+        state.currentUser.following.append(uuid)
+        state.home.currentUser.following.append(uuid)
+        state.currentProfile.profile.currentUser.following.append(uuid)
+        return .none
+        
       case .home(_):
         return .none
         
@@ -117,7 +136,7 @@ struct Tabs {
         state.home.isLoading = true
         return .none
         
-      case .camera(.didSend(.success(let story))):
+      case .camera(.didSend(.success(_))):
         state.home.isLoading = false
         return .run { send in
           await send(.home(.stories(.fetchStories)))

@@ -12,7 +12,8 @@ class Mocks {
     uuid: UUID(),
     username: "username",
     display_name: "Display Name",
-    avatar_url: nil
+    avatar_url: nil,
+    following: []
   )
   static let media = MediaModel(
     uuid: UUID(),

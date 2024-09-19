@@ -84,7 +84,7 @@ struct Camera {
           }
         }
         
-      case .didSend(.success(let story)):
+      case .didSend(.success(_)):
         return .none
         
       case .didSend(.failure(let error)):
