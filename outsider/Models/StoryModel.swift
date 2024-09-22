@@ -12,7 +12,7 @@ enum StoryType: String, Codable {
   case video
 }
 
-struct StoryModel: Codable, Equatable, Identifiable {
+struct StoryModel: Codable, Equatable, Identifiable, Hashable {
   var id: UUID { uuid }
   let uuid: UUID
   let author: UserModel

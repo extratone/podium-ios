@@ -8,7 +8,6 @@
 import SwiftUI
 import ComposableArchitecture
 import PhotosUI
-import CachedAsyncImage
 
 struct ProfileView: View {
   @Bindable var store: StoreOf<Profile>
@@ -36,7 +35,7 @@ struct ProfileView: View {
                     .frame(width: 72, height: 72)
                     .clipShape(Circle())
                 } else {
-                  CachedAsyncImage(url: store.user.avatar_url) { image in
+                  AsyncCachedImage(url: store.user.avatar_url) { image in
                     image
                       .resizable()
                       .scaledToFill()
@@ -50,7 +49,7 @@ struct ProfileView: View {
                 }
               }
             } else {
-              CachedAsyncImage(url: store.user.avatar_url) { image in
+              AsyncCachedImage(url: store.user.avatar_url) { image in
                 image
                   .resizable()
                   .scaledToFill()

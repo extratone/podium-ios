@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TabsView: View {
   @Bindable var store: StoreOf<Tabs>
+  @Environment(\.scenePhase) var scenePhase
   
   var body: some View {
     ZStack {
@@ -58,6 +59,7 @@ struct TabsView: View {
             )
             .id(1)
           }
+          .scrollTargetLayout()
         }
         .scrollDisabled(store.tabSelection != Tabs.TabSelection.home || !store.home.path.isEmpty || store.home.send.focusedField != nil)
         .scrollPosition(id: $store.selection.sending(\.onSelectionChanged))
@@ -70,6 +72,11 @@ struct TabsView: View {
     .onAppear {
       store.send(.initialize)
     }
+    .onChange(of: scenePhase, { _, newValue in
+      if newValue == .active {
+        store.send(.initialize)
+      }
+    })
     .banner(
       data: $store.bannerData.sending(\.bannerDataChanged),
       show: $store.showBanner.sending(\.showBannerChanged)
@@ -93,7 +100,9 @@ struct TabsView: View {
           currentUser: Mocks.user
         )
       ),
-      explore: Explore.State(),
+      explore: Explore.State(
+        currentUser: Mocks.user
+      ),
       currentProfile: CurrentProfile.State(
         profile: Profile.State(
           currentUser: Mocks.user,

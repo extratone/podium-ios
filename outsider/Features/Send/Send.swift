@@ -45,7 +45,7 @@ struct Send {
   
   var body: some Reducer<State, Action> {
     Reduce { state, action in
-      switch action {
+      switch action {  
       case .setFocusedField(let field):
         state.focusedField = field
         return .none

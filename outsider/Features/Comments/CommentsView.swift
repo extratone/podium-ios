@@ -38,6 +38,7 @@ struct CommentsView: View {
         .padding()
     }
     .navigationTitle("Post")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
 

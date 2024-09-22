@@ -93,6 +93,7 @@ struct Home {
                   likes(*)
                 """
               )
+//              .in("author.uuid", values: currentUser.following)
               .order("created_at", ascending: false)
               .limit(20)
               .execute()

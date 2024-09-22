@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ComposableArchitecture
-import CachedAsyncImage
 
 struct PostView: View {
   @Bindable var store: StoreOf<Post>
@@ -24,7 +23,7 @@ struct PostView: View {
             Button {
               onShowProfile()
             } label: {
-              CachedAsyncImage(url: store.post.author.avatar_url) { image in
+              AsyncCachedImage(url: store.post.author.avatar_url) { image in
                 image
                   .resizable()
                   .scaledToFill()
@@ -86,7 +85,7 @@ struct PostView: View {
                       Rectangle()
                         .frame(height: 180)
                         .overlay(
-                          CachedAsyncImage(url: URL(string: mediaItem.url)) { image in
+                          AsyncCachedImage(url: URL(string: mediaItem.url)) { image in
                             image
                               .resizable()
                               .scaledToFill()
@@ -145,6 +144,8 @@ struct PostView: View {
         Spacer()
         
         Button {
+          let impactMed = UIImpactFeedbackGenerator(style: .medium)
+          impactMed.impactOccurred()
           if store.isLiked {
             store.send(.unlike)
           } else {
@@ -165,7 +166,6 @@ struct PostView: View {
           .padding(.vertical, 8)
           .padding(.horizontal, 16)
         }
-        .sensoryFeedback(.success, trigger: store.post.likes)
         
         Spacer()
         

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Supabase
 
 @Reducer
 struct Tabs {
@@ -26,6 +27,7 @@ struct Tabs {
     var showBanner = false
     var selection: Int?
     var tabSelection: TabSelection = .home
+    var channel: RealtimeChannelV2?
     
     // Sub states
     var camera: Camera.State
@@ -36,11 +38,16 @@ struct Tabs {
   
   enum Action {
     case initialize
+    case subscribe
+    case onSubscribe(RealtimeChannelV2)
+    case unsubscribe
+    case onUnsubscribe
     case showBannerChanged(Bool)
     case bannerDataChanged(BannerModifier.BannerData)
     case handleBadSession
     case onSelectionChanged(Int?)
     case onTabSelectionChanged(TabSelection)
+    case onInsertStory(Result<StoryModel, Error>)
     
     // Sub actions
     case camera(Camera.Action)
@@ -52,9 +59,84 @@ struct Tabs {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .subscribe:
+        return .run { [currentUser = state.currentUser] send in
+          let channel = supabase.channel("stories-\(currentUser.uuid.uuidString)")
+          
+          let insertions = channel.postgresChange(
+            InsertAction.self,
+            schema: "public",
+            table: "stories",
+            filter: "author_uuid=in.(\(currentUser.following.map({ $0.uuidString }).joined(separator: ", ")))"
+          )
+          
+          await channel.subscribe()
+          await send(.onSubscribe(channel))
+          
+          for await insertAction in insertions {
+            do {
+              let jsonData = try JSONEncoder().encode(insertAction.record)
+              let storyModel = try JSONDecoder().decode(StoryModelInsert.self, from: jsonData)
+              
+              let story: StoryModel = try await supabase
+                .from("stories")
+                .select(
+                  """
+                    uuid,
+                    url,
+                    type,
+                    author:users(*),
+                    stats:stories_stats(*)
+                  """
+                )
+                .eq("uuid", value: storyModel.uuid)
+                .single()
+                .execute()
+                .value
+              
+              await send(.onInsertStory(.success(story)))
+            } catch {
+              await send(.onInsertStory(.failure(error)))
+            }
+          }
+        }
+        
+      case .onSubscribe(let channel):
+        state.channel = channel
+        return .none
+        
+      case .onUnsubscribe:
+        state.channel = nil
+        return .none
+        
+      case .onInsertStory(.success(let story)):
+        if state.home.stories.stories[story.author] == nil {
+          state.home.stories.stories[story.author] = []
+        }
+        state.home.stories.stories[story.author]?.append(story)
+        return .none
+        
+      case .onInsertStory(.failure(let error)):
+        print(error)
+        return .none
+        
+      case .unsubscribe:
+        return .run { [channel = state.channel] send in
+          await channel?.unsubscribe()
+          await send(.onUnsubscribe)
+        }
+        
       case .onSelectionChanged(let selection):
         state.selection = selection
-        return .none
+        if state.selection == 0 {
+          return .run { [camera = state.camera] send in
+            await camera.camera.start()
+          }
+        } else {
+          return .run { [camera = state.camera] send in
+            camera.camera.stop()
+          }
+        }
         
       case .onTabSelectionChanged(let tabSelection):
         state.tabSelection = tabSelection
@@ -76,6 +158,11 @@ struct Tabs {
           },
           .run { send in
             await send(.currentProfile(.profile(.fetchProfile)))
+          },
+          .run { send in
+            await send(.unsubscribe)
+            await send(.home(.stories(.fetchStories)))
+            await send(.subscribe)
           }
         )
         
@@ -122,8 +209,32 @@ struct Tabs {
       case .home(.path(.element(_, .profile(.didFollow(.success(let uuid)))))):
         state.currentUser.following.append(uuid)
         state.home.currentUser.following.append(uuid)
+        state.home.stories.currentUser.following.append(uuid)
         state.currentProfile.profile.currentUser.following.append(uuid)
-        return .none
+        if let encoded = try? JSONEncoder().encode(state.currentUser) {
+          UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
+        }
+        return .run { send in
+          await send(.unsubscribe)
+          await send(.home(.fetchPosts))
+          await send(.home(.stories(.fetchStories)))
+          await send(.subscribe)
+        }
+        
+      case .home(.path(.element(_, .profile(.didUnfollow(.success(let uuid)))))):
+        state.currentUser.following.removeAll(where: { $0 == uuid })
+        state.home.currentUser.following.removeAll(where: { $0 == uuid })
+        state.home.stories.currentUser.following.removeAll(where: { $0 == uuid })
+        state.currentProfile.profile.currentUser.following.removeAll(where: { $0 == uuid })
+        if let encoded = try? JSONEncoder().encode(state.currentUser) {
+          UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
+        }
+        return .run { send in
+          await send(.unsubscribe)
+          await send(.home(.fetchPosts))
+          await send(.home(.stories(.fetchStories)))
+          await send(.subscribe)
+        }
         
       case .home(_):
         return .none
@@ -149,6 +260,10 @@ struct Tabs {
         return .run { send in
           await send(.currentProfile(.profile(.fetchProfile)))
         }
+        
+      case .currentProfile(.profile(.didFetchProfile(.success((let user, _))))):
+        state.home.stories.currentUser = user
+        return .none
         
       case .currentProfile(_):
         return .none

@@ -19,64 +19,110 @@ struct ExploreView: View {
   }
   
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       List {
-        Section {
-          HStack {
-            Image("icon-search")
-              .resizable()
-              .scaledToFill()
-              .frame(width: 42, height: 42)
-              .clipShape(Circle())
-            
-            VStack(alignment: .leading) {
-              Text("Michal Jach")
-                .fontWeight(.medium)
-                .foregroundStyle(.colorTextPrimary)
-              
-              Text("@jach")
-                .foregroundStyle(.colorTextSecondary)
+        Group {
+          if store.isSearching {
+            ForEach(store.searchResults, id: \.self) { result in
+              Button {
+                store.send(.presentProfile(result))
+              } label: {
+                HStack {
+                  AsyncCachedImage(url: result.avatar_url) { image in
+                    image
+                      .resizable()
+                      .scaledToFill()
+                      .frame(width: 42, height: 42)
+                      .clipShape(Circle())
+                  } placeholder: {
+                    Circle()
+                      .frame(width: 42, height: 42)
+                      .foregroundColor(.colorBackgroundPrimary)
+                  }
+                  
+                  VStack(alignment: .leading) {
+                    if let displayName = result.display_name {
+                      Text(displayName)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.colorTextPrimary)
+                    }
+                    
+                    Text("@\(result.username)")
+                      .foregroundStyle(.colorTextSecondary)
+                  }
+                  
+                  Spacer()
+                }
+              }
             }
-            
-            Spacer()
-            
-            Button {
-              
-            } label: {
-              Text("Follow")
+          } else {
+            Section {
+              ForEach(store.suggestedProfiles, id: \.self) { profile in
+                VStack(spacing: 0) {
+                  Button {
+                    store.send(.presentProfile(profile))
+                  } label: {
+                    HStack {
+                      AsyncCachedImage(url: profile.avatar_url) { image in
+                        image
+                          .resizable()
+                          .scaledToFill()
+                          .frame(width: 42, height: 42)
+                          .clipShape(Circle())
+                      } placeholder: {
+                        Circle()
+                          .frame(width: 42, height: 42)
+                          .foregroundColor(.colorBackgroundPrimary)
+                      }
+                      
+                      VStack(alignment: .leading, spacing: 0) {
+                        if let displayName = profile.display_name {
+                          Text(displayName)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.colorTextPrimary)
+                        }
+                        
+                        Text("@\(profile.username)")
+                          .foregroundStyle(.colorTextSecondary)
+                      }
+                      
+                      Spacer()
+                    }
+                  }
+                }
+              }
+            } header: {
+              Text("Profiles")
             }
-            .buttonStyle(PrimarySmallButton())
+            .listRowSeparator(.hidden)
+            
+            Section {
+              NavigationLink(destination: Text("d")) {
+                Text("#worldcup")
+                  .fontWeight(.medium)
+                  .foregroundStyle(.colorTextPrimary)
+              }
+              NavigationLink(destination: Text("d")) {
+                Text("#test")
+                  .fontWeight(.medium)
+                  .foregroundStyle(.colorTextPrimary)
+              }
+              NavigationLink(destination: Text("d")) {
+                Text("#yoga")
+                  .fontWeight(.medium)
+                  .foregroundStyle(.colorTextPrimary)
+              }
+            } header: {
+              Text("Tags")
+            }
+            .listRowSeparator(.hidden)
+            
+            Section {
+              
+            } header: {
+              Text("Popular")
+            }
           }
-        } header: {
-          Text("Profiles")
-        }
-        .listRowSeparator(.hidden)
-        
-        Section {
-          NavigationLink(destination: Text("d")) {
-            Text("#worldcup")
-              .fontWeight(.medium)
-              .foregroundStyle(.colorTextPrimary)
-          }
-          NavigationLink(destination: Text("d")) {
-            Text("#test")
-              .fontWeight(.medium)
-              .foregroundStyle(.colorTextPrimary)
-          }
-          NavigationLink(destination: Text("d")) {
-            Text("#yoga")
-              .fontWeight(.medium)
-              .foregroundStyle(.colorTextPrimary)
-          }
-        } header: {
-          Text("Tags")
-        }
-        .listRowSeparator(.hidden)
-        
-        Section {
-          
-        } header: {
-          Text("Popular")
         }
         .listRowSeparator(.hidden)
       }
@@ -88,13 +134,26 @@ struct ExploreView: View {
       )
       .textInputAutocapitalization(.never)
       .navigationTitle("Explore")
+    } destination: { store in
+      switch store.case {
+      case let .profile(store):
+        ProfileView(store: store)
+        
+      case let .comments(store):
+        CommentsView(store: store)
+      }
+    }
+    .onAppear {
+      store.send(.initialize)
     }
   }
 }
 
 #Preview {
   ExploreView(
-    store: Store(initialState: Explore.State()) {
+    store: Store(initialState: Explore.State(
+      currentUser: Mocks.user
+    )) {
       Explore()
     }
   )

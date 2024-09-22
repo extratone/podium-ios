@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ComposableArchitecture
-import CachedAsyncImage
 
 struct HomeView: View {
   @Bindable var store: StoreOf<Home>
@@ -48,7 +47,6 @@ struct HomeView: View {
               }
               .padding(.top, 10)
               .padding(.bottom, 72)
-//              .animation(.spring(), value: store.posts)
             }
             .scrollDismissesKeyboard(.interactively)
             

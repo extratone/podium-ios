@@ -105,7 +105,8 @@ struct Profile {
           }
         }
         
-      case .didUnfollow(.success(_)):
+      case .didUnfollow(.success(let uuid)):
+        state.currentUser.following.removeAll(where: { $0 == uuid })
         state.isPending = false
         return .none
         
@@ -150,10 +151,7 @@ struct Profile {
               .from("users")
               .select(
                 """
-                  uuid,
-                  username,
-                  display_name,
-                  avatar_url,
+                  *,
                   following
                 """
               )

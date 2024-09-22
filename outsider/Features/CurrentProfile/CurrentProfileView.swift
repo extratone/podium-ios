@@ -8,7 +8,6 @@
 import SwiftUI
 import ComposableArchitecture
 import PhotosUI
-import CachedAsyncImage
 
 struct CurrentProfileView: View {
   @Bindable var store: StoreOf<CurrentProfile>
@@ -35,6 +34,12 @@ struct CurrentProfileView: View {
       switch store.case {
       case let .settings(store):
         SettingsView(store: store)
+        
+      case let .profile(store):
+        ProfileView(store: store)
+        
+      case let .comments(store):
+        CommentsView(store: store)
       }
     }
   }

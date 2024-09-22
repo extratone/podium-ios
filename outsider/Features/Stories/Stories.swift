@@ -52,7 +52,10 @@ struct Stories {
         return .none
         
       case .fetchStories:
-        return .run { send in
+        return .run { [currentUser = state.currentUser] send in
+          var following = currentUser.following
+          following.append(currentUser.uuid)
+          
           do {
             let stories: [StoryModel] = try await supabase
               .from("stories")
@@ -61,11 +64,12 @@ struct Stories {
                   uuid,
                   url,
                   type,
-                  author:users(*),
+                  author:users!inner(*),
                   stats:stories_stats(*)
                 """
               )
-              .order("created_at", ascending: false)
+              .in("author.uuid", values: following)
+              .order("created_at", ascending: true)
               .execute()
               .value
             
@@ -93,6 +97,14 @@ struct Stories {
           tempStories[id: story.uuid] = tempData
           state.stories[story.author] = tempStories
         }
+        return .none
+        
+      case .story(.presented(.didDelete(.success(let story)))):
+        state.stories[story.author]?.removeAll(where: { $0.uuid == story.uuid })
+        if let userStories = state.stories[story.author], userStories.isEmpty {
+          state.stories.removeValue(forKey: story.author)
+        }
+        state.story = nil
         return .none
         
       case .story:

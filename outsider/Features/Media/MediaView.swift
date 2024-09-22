@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ComposableArchitecture
-import CachedAsyncImage
 
 struct MediaView: View {
   var store: StoreOf<Media>
@@ -17,7 +16,7 @@ struct MediaView: View {
       Spacer()
       HStack {
         Spacer()
-        CachedAsyncImage(url: URL(string: store.media.url)) { image in
+        AsyncCachedImage(url: URL(string: store.media.url)) { image in
           image
             .resizable()
             .scaledToFit()

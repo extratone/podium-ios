@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 @Reducer
-struct Main {
+struct Main {  
   @ObservableState
   struct State {
     // Sub states
@@ -41,7 +41,9 @@ struct Main {
               send: Send.State(currentUser: decoded),
               stories: Stories.State(currentUser: decoded)
             ),
-            explore: Explore.State(),
+            explore: Explore.State(
+              currentUser: decoded
+            ),
             currentProfile: CurrentProfile.State(
               profile: Profile.State(
                 currentUser: decoded,
@@ -66,7 +68,9 @@ struct Main {
             send: Send.State(currentUser: user),
             stories: Stories.State(currentUser: user)
           ),
-          explore: Explore.State(),
+          explore: Explore.State(
+            currentUser: user
+          ),
           currentProfile: CurrentProfile.State(
             profile: Profile.State(
               currentUser: user,

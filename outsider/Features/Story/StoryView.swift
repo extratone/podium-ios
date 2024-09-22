@@ -7,24 +7,39 @@
 
 import SwiftUI
 import ComposableArchitecture
-import CachedAsyncImage
+import AVKit
 
 struct StoryView: View {
-  var store: StoreOf<Story>
+  @Bindable var store: StoreOf<Story>
   
   var body: some View {
     ZStack {
-      if let selectedStory = store.selectedStory {
+      if store.selectedStory?.type == .video {
+        GeometryReader { geometry in
+          VideoPlayer(player: store.queuePlayer)
+            .disabled(true)
+            .aspectRatio(contentMode: .fill)
+            .ignoresSafeArea()
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+            .clipped()
+            .onDisappear {
+              store.queuePlayer?.pause()
+            }
+            .background {
+              Color.black
+                .ignoresSafeArea()
+            }
+        }
+        .ignoresSafeArea()
+      } else {
         Color.black
           .ignoresSafeArea()
           .overlay {
-            CachedAsyncImage(url: selectedStory.url) { image in
-              image
+            if let image = store.image {
+              Image(uiImage: image)
                 .resizable()
                 .scaledToFill()
-                .ignoresSafeArea()
-            } placeholder: {
-              Color.black
                 .ignoresSafeArea()
             }
           }
@@ -43,7 +58,7 @@ struct StoryView: View {
         .padding(.top)
         
         HStack {
-          CachedAsyncImage(url: store.selectedUser.avatar_url) { image in
+          AsyncCachedImage(url: store.selectedUser.avatar_url) { image in
             image
               .resizable()
               .scaledToFill()
@@ -70,6 +85,19 @@ struct StoryView: View {
           }
           
           Spacer()
+          
+          if store.selectedStory?.author.uuid == store.currentUser.uuid {
+            Menu {
+              Button(role: .destructive, action: { store.send(.delete) }) {
+                Label("Delete", systemImage: "trash")
+              }
+            } label: {
+              Image("icon-dots")
+                .resizable()
+                .frame(width: 22, height: 22)
+                .foregroundColor(.white)
+            }
+          }
         }
         .padding()
         
@@ -93,19 +121,32 @@ struct StoryView: View {
           Spacer()
           
           if store.selectedStory?.author.uuid == store.currentUser.uuid {
-            HStack {
-              Image("icon-views")
-                .resizable()
-                .frame(width: 24, height: 24)
-                .foregroundStyle(.white)
-              
-              Text("\(store.selectedStory?.stats?.count ?? 0) views")
-                .foregroundStyle(.white)
-                .fontWeight(.medium)
+            Button {
+              store.send(.presentStats)
+            } label: {
+              HStack {
+                Image("icon-views")
+                  .resizable()
+                  .frame(width: 20, height: 20)
+                  .foregroundStyle(.white)
+                
+                Text("\(store.selectedStory?.stats?.count ?? 0) views")
+                  .foregroundStyle(.white)
+                  .fontWeight(.medium)
+                  .font(.subheadline)
+              }
             }
           }
         }
         .padding()
+      }
+      .sheet(item: $store.scope(state: \.stats, action: \.stats)) { store in
+        StatsView(store: store)
+          .presentationDetents([
+            .fraction(0.2),
+            .medium,
+            .large
+          ])
       }
       .onAppear {
         store.send(.initialize)

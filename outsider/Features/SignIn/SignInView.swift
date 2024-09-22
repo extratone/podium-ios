@@ -21,8 +21,12 @@ struct SignInView: View {
             .foregroundStyle(.colorTextPrimary)
           
           Text("Welcome on Podium!")
-            .font(.title2)
+            .font(.title)
             .fontWeight(.semibold)
+          
+          Text("Open source network.")
+            .font(.title3)
+            .fontWeight(.medium)
         }
         .padding(.bottom, 24)
         

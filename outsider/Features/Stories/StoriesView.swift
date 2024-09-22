@@ -7,7 +7,6 @@
 
 import SwiftUI
 import ComposableArchitecture
-import CachedAsyncImage
 
 struct StoriesView: View {
   @Bindable var store: StoreOf<Stories>
@@ -23,7 +22,7 @@ struct StoriesView: View {
           }
         } label: {
           ZStack {
-            CachedAsyncImage(url: store.currentUser.avatar_url) { image in
+            AsyncCachedImage(url: store.currentUser.avatar_url) { image in
               image
                 .resizable()
                 .scaledToFill()
@@ -81,7 +80,7 @@ struct StoriesView: View {
                   .frame(width: 56, height: 56)
               }
               
-              CachedAsyncImage(url: author.avatar_url) { image in
+              AsyncCachedImage(url: author.avatar_url) { image in
                 image
                   .resizable()
                   .scaledToFill()

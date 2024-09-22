@@ -1,5 +1,5 @@
 {
-  "originHash" : "daf18538c337c29b7b44978659db9938f72bb51585e55f4a9708214a14325172",
+  "originHash" : "6de27091f073807a5364bf8889f6e4684960089acb946e63e003f5b4b7b66043",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -125,15 +125,6 @@
       "state" : {
         "revision" : "515f79b522918f83483068d99c68daeb5116342d",
         "version" : "600.0.0-prerelease-2024-09-04"
-      }
-    },
-    {
-      "identity" : "swiftui-cached-async-image",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
-      "state" : {
-        "revision" : "467a3d17479887943ab917a379e62bbaff60ac8a",
-        "version" : "2.1.1"
       }
     },
     {
