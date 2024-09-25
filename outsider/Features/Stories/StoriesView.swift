@@ -15,7 +15,7 @@ struct StoriesView: View {
     ScrollView(.horizontal) {
       HStack {
         Button {
-          if store.stories.first(where: { $0.key.uuid == store.currentUser.uuid }) != nil {
+          if store.stories[store.currentUser.uuid]?.first != nil {
             store.send(.presentSheet(store.currentUser))
           } else {
             store.send(.presentCamera)
@@ -34,7 +34,7 @@ struct StoriesView: View {
                 .foregroundColor(.colorBackgroundPrimary)
             }
             
-            if store.stories.first(where: { $0.key.uuid == store.currentUser.uuid }) != nil {
+            if store.stories[store.currentUser.uuid]?.first != nil {
               Circle()
                 .strokeBorder(.colorBackgroundTertiary, lineWidth: 2)
                 .frame(width: 56, height: 56)
@@ -65,12 +65,12 @@ struct StoriesView: View {
           }
         }
         
-        ForEach(Array(store.stories.filter({ $0.key.uuid != store.currentUser.uuid })), id: \.key) { author, stories in
+        ForEach(Array(store.stories.filter({ $0.key != store.currentUser.uuid })), id: \.key) { authorUuid, stories in
           Button {
-            store.send(.presentSheet(author))
+            store.send(.presentSheet(stories.first?.author))
           } label: {
             ZStack {
-              if stories.contains(where: { !($0.stats?.contains(where: { $0.viewed_by == store.currentUser.uuid }) ?? true) }) {
+              if stories.contains(where: { !($0.stats?.contains(where: { $0.viewed_by.uuid == store.currentUser.uuid }) ?? true) }) {
                 Circle()
                   .strokeBorder(.colorPrimary, lineWidth: 2)
                   .frame(width: 56, height: 56)
@@ -80,7 +80,7 @@ struct StoriesView: View {
                   .frame(width: 56, height: 56)
               }
               
-              AsyncCachedImage(url: author.avatar_url) { image in
+              AsyncCachedImage(url: stories.first?.author.avatar_url) { image in
                 image
                   .resizable()
                   .scaledToFill()

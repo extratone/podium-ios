@@ -14,7 +14,7 @@ struct Stats {
   
   @ObservableState
   struct State: Equatable {
-    var profiles: [UserModel]?
+    var stats: [StoryStatsModel]?
   }
   
   enum Action {

@@ -203,6 +203,7 @@ struct Camera {
                     uuid,
                     url,
                     type,
+                    created_at,
                     author:users(*),
                     stats:stories_stats(*)
                   """
@@ -252,6 +253,7 @@ struct Camera {
                     uuid,
                     url,
                     type,
+                    created_at,
                     author:users(*),
                     stats:stories_stats(*)
                   """
@@ -300,6 +302,7 @@ struct Camera {
                     uuid,
                     url,
                     type,
+                    created_at,
                     author:users(*),
                     stats:stories_stats(*)
                   """

@@ -39,7 +39,7 @@ struct TabsView: View {
                   }
                   .tag(Tabs.TabSelection.explore)
                 
-                Text("Messages")
+                MessagesView(store: store.scope(state: \.messages, action: \.messages))
                   .toolbarBackground(Color.colorBase, for: .tabBar)
                   .tabItem {
                     Image("icon-messages")
@@ -67,14 +67,18 @@ struct TabsView: View {
         .scrollTargetBehavior(.paging)
         .animation(.easeInOut, value: store.selection)
         .toolbarBackground(Color.colorBase, for: .tabBar)
+        .onAppear {
+          store.send(.initialize)
+        }
       }
-    }
-    .onAppear {
-      store.send(.initialize)
     }
     .onChange(of: scenePhase, { _, newValue in
       if newValue == .active {
-        store.send(.initialize)
+        store.send(.messages(.subscribeMessages))
+        store.send(.messages(.subscribeChats))
+      } else if newValue == .background {
+//        store.send(.messages(.unsubscribeMessages))
+//        store.send(.messages(.unsubscribeChats))
       }
     })
     .banner(
@@ -101,6 +105,9 @@ struct TabsView: View {
         )
       ),
       explore: Explore.State(
+        currentUser: Mocks.user
+      ),
+      messages: Messages.State(
         currentUser: Mocks.user
       ),
       currentProfile: CurrentProfile.State(

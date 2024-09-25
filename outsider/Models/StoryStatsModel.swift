@@ -10,6 +10,13 @@ import Foundation
 struct StoryStatsModel: Codable, Equatable, Hashable, Identifiable {
   var id: UUID { uuid }
   let uuid: UUID
+  let viewed_by: UserModel
+  let story_uuid: UUID
+  let author_uuid: UUID
+}
+
+struct StoryStatsModelInsert: Codable, Equatable, Hashable {
+  let uuid: UUID
   let viewed_by: UUID
   let story_uuid: UUID
   let author_uuid: UUID

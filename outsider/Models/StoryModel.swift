@@ -17,6 +17,7 @@ struct StoryModel: Codable, Equatable, Identifiable, Hashable {
   let uuid: UUID
   let author: UserModel
   let url: URL
+  let created_at: Date
   let type: StoryType
   var stats: [StoryStatsModel]?
 }

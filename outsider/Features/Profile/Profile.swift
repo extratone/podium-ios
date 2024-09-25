@@ -47,10 +47,10 @@ struct Profile {
     case presentProfile(UserModel)
     case onDisplayNameChanged(String)
     case setDisplayName
-    case follow(UUID)
-    case didFollow(Result<UUID, Error>)
-    case unfollow(UUID)
-    case didUnfollow(Result<UUID, Error>)
+    case follow(UserModel)
+    case didFollow(Result<UserModel, Error>)
+    case unfollow(UserModel)
+    case didUnfollow(Result<UserModel, Error>)
     
     // Sub actions
     case posts(IdentifiedActionOf<Post>)
@@ -59,26 +59,26 @@ struct Profile {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .follow(let uuid):
+      case .follow(let user):
         state.isPending = true
-        var following = state.currentUser.following
-        following.append(uuid)
-        return .run { [following = following, currentUser = state.currentUser] send in
+        return .run { [currentUser = state.currentUser] send in
           do {
             try await supabase
-              .from("users")
-              .update(["following": following])
-              .eq("uuid", value: currentUser.uuid)
+              .from("users_following")
+              .upsert(FollowingModelInsert(
+                user_uuid: currentUser.uuid,
+                following_user_uuid: user.uuid
+              ))
               .execute()
             
-            await send(.didFollow(.success(uuid)))
+            await send(.didFollow(.success(user)))
           } catch {
             await send(.didFollow(.failure(error)))
           }
         }
         
-      case .didFollow(.success(let uuid)):
-        state.currentUser.following.append(uuid)
+      case .didFollow(.success(let user)):
+        state.currentUser.following?.append(FollowingModel(following: user))
         state.isPending = false
         return .none
         
@@ -87,26 +87,25 @@ struct Profile {
         print(error)
         return .none
         
-      case .unfollow(let uuid):
+      case .unfollow(let user):
         state.isPending = true
-        var following = state.currentUser.following
-        following.removeAll(where: { $0 == uuid })
-        return .run { [following = following, currentUser = state.currentUser] send in
+        return .run { [currentUser = state.currentUser] send in
           do {
             try await supabase
-              .from("users")
-              .update(["following": following])
-              .eq("uuid", value: currentUser.uuid)
+              .from("users_following")
+              .delete()
+              .eq("user_uuid", value: currentUser.uuid)
+              .eq("following_user_uuid", value: user.uuid)
               .execute()
             
-            await send(.didUnfollow(.success(uuid)))
+            await send(.didUnfollow(.success(user)))
           } catch {
             await send(.didUnfollow(.failure(error)))
           }
         }
         
-      case .didUnfollow(.success(let uuid)):
-        state.currentUser.following.removeAll(where: { $0 == uuid })
+      case .didUnfollow(.success(let user)):
+        state.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
         state.isPending = false
         return .none
         
@@ -151,8 +150,13 @@ struct Profile {
               .from("users")
               .select(
                 """
-                  *,
-                  following
+                  uuid,
+                  username,
+                  display_name,
+                  avatar_url,
+                  following:users_following!users_following_user_uuid_fkey(
+                    following:users!users_following_following_user_uuid_fkey(*)
+                  )
                 """
               )
               .eq("uuid", value: user.uuid)

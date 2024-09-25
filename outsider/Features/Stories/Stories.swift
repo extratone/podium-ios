@@ -15,7 +15,7 @@ struct Stories {
   @ObservableState
   struct State: Equatable {
     var currentUser: UserModel
-    var stories: Dictionary<UserModel, IdentifiedArrayOf<StoryModel>> = [:]
+    var stories: Dictionary<UUID, IdentifiedArrayOf<StoryModel>> = [:]
     
     // Sub states
     @Presents var story: Story.State?
@@ -24,8 +24,8 @@ struct Stories {
   enum Action {
     case initialize
     case fetchStories
-    case didFetchStories(Result<Dictionary<UserModel, [StoryModel]>, Error>)
-    case presentSheet(UserModel)
+    case didFetchStories(Result<Dictionary<UUID, [StoryModel]>, Error>)
+    case presentSheet(UserModel?)
     case presentCamera
     
     // Sub actions
@@ -44,6 +44,7 @@ struct Stories {
         return .none
         
       case .presentSheet(let user):
+        guard let user = user else { return .none }
         state.story = Story.State(
           currentUser: state.currentUser,
           stories: state.stories,
@@ -53,8 +54,8 @@ struct Stories {
         
       case .fetchStories:
         return .run { [currentUser = state.currentUser] send in
-          var following = currentUser.following
-          following.append(currentUser.uuid)
+          var following = currentUser.following ?? []
+          following.append(FollowingModel(following: currentUser))
           
           do {
             let stories: [StoryModel] = try await supabase
@@ -64,16 +65,17 @@ struct Stories {
                   uuid,
                   url,
                   type,
+                  created_at,
                   author:users!inner(*),
-                  stats:stories_stats(*)
+                  stats:stories_stats(*, viewed_by:users(*))
                 """
               )
-              .in("author.uuid", values: following)
+              .in("author.uuid", values: following.compactMap({ $0.following.uuid }))
               .order("created_at", ascending: true)
               .execute()
               .value
             
-            let grouped = Dictionary(grouping: stories, by: { $0.author })
+            let grouped = Dictionary(grouping: stories, by: { $0.author.uuid })
             await send(.didFetchStories(.success(grouped)))
           } catch {
             await send(.didFetchStories(.failure(error)))
@@ -91,18 +93,18 @@ struct Stories {
         return .none
         
       case .story(.presented(.didMarkAsViewed(.success((let stat, let story))))):
-        if var tempStories = state.stories[story.author],
+        if var tempStories = state.stories[story.author.uuid],
            var tempData = tempStories[id: story.uuid] {
           tempData.stats?.append(stat)
           tempStories[id: story.uuid] = tempData
-          state.stories[story.author] = tempStories
+          state.stories[story.author.uuid] = tempStories
         }
         return .none
         
       case .story(.presented(.didDelete(.success(let story)))):
-        state.stories[story.author]?.removeAll(where: { $0.uuid == story.uuid })
-        if let userStories = state.stories[story.author], userStories.isEmpty {
-          state.stories.removeValue(forKey: story.author)
+        state.stories[story.author.uuid]?.removeAll(where: { $0.uuid == story.uuid })
+        if let userStories = state.stories[story.author.uuid], userStories.isEmpty {
+          state.stories.removeValue(forKey: story.author.uuid)
         }
         state.story = nil
         return .none

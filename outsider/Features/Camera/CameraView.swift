@@ -101,7 +101,28 @@ struct CameraView: View {
         
         if store.hasMedia {
           HStack {
+            HStack(spacing: 24) {
+              Button {
+                
+              } label: {
+                Image(systemName: "textbox")
+                  .resizable()
+                  .frame(width: 32, height: 22)
+                  .foregroundStyle(.white)
+              }
+              
+              Button {
+                
+              } label: {
+                Image(systemName: "photo")
+                  .resizable()
+                  .frame(width: 28, height: 22)
+                  .foregroundStyle(.white)
+              }
+            }
+            
             Spacer()
+            
             Button {
               if store.image != nil {
                 store.send(.send(.cameraRollPhoto))
@@ -130,7 +151,7 @@ struct CameraView: View {
             .disabled(store.isPending)
             .opacity(store.isPending ? 0.6 : 1)
           }
-          .padding()
+          .padding(24)
         } else {
           HStack {
             PhotosPicker(
@@ -193,7 +214,7 @@ struct CameraView: View {
   CameraView(
     store: Store(initialState: Camera.State(
       currentUser: Mocks.user,
-      photoToken: UIImage(systemName: "camera")?.withTintColor(.red).pngData()
+      photoToken: UIImage(systemName: "apple.logo")?.withTintColor(.red).pngData()
     )) {
       Camera()
     }

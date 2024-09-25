@@ -14,7 +14,7 @@ struct StatsView: View {
   var body: some View {
     VStack(spacing: 0) {
       HStack {
-        Text("\(store.profiles?.count ?? 0) views")
+        Text("\(store.stats?.count ?? 0) views")
           .font(.subheadline)
           .fontWeight(.medium)
         Spacer()
@@ -25,10 +25,10 @@ struct StatsView: View {
       
       ScrollView {
         VStack(alignment: .leading) {
-          if let profiles = store.profiles {
-            ForEach(profiles) { profile in
+          if let stats = store.stats {
+            ForEach(stats) { stat in
               HStack {
-                AsyncCachedImage(url: profile.avatar_url) { image in
+                AsyncCachedImage(url: stat.viewed_by.avatar_url) { image in
                   image
                     .resizable()
                     .scaledToFill()
@@ -41,12 +41,12 @@ struct StatsView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
-                  if let displayName = profile.display_name {
+                  if let displayName = stat.viewed_by.display_name {
                     Text(displayName)
                       .fontWeight(.medium)
                   }
                   
-                  Text("@\(profile.username)")
+                  Text("@\(stat.viewed_by.username)")
                     .fontWeight(.medium)
                     .foregroundStyle(.colorTextSecondary)
                     .font(.subheadline)

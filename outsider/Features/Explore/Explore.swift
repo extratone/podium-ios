@@ -113,12 +113,12 @@ struct Explore {
         print(error)
         return .none
         
-      case .path(.element(_, action: .profile(.didFollow(.success(let uuid))))):
-        state.currentUser.following.append(uuid)
+      case .path(.element(_, action: .profile(.didFollow(.success(let user))))):
+        state.currentUser.following?.append(FollowingModel(following: user))
         return .none
         
-      case .path(.element(_, action: .profile(.didUnfollow(.success(let uuid))))):
-        state.currentUser.following.removeAll(where: { $0 == uuid })
+      case .path(.element(_, action: .profile(.didUnfollow(.success(let user))))):
+        state.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
         return .none
         
       case .path(.element(_, action: .profile(.presentComments(let post)))):

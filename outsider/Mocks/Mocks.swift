@@ -13,7 +13,20 @@ class Mocks {
     username: "username",
     display_name: "Display Name",
     avatar_url: nil,
-    following: []
+    following: [
+      FollowingModel(following: UserModel(
+        uuid: UUID(),
+        username: "test",
+        display_name: "Test User",
+        avatar_url: nil
+      )),
+      FollowingModel(following: UserModel(
+        uuid: UUID(),
+        username: "test1",
+        display_name: nil,
+        avatar_url: nil
+      ))
+    ]
   )
   static let media = MediaModel(
     uuid: UUID(),
@@ -37,7 +50,21 @@ class Mocks {
     uuid: UUID(),
     author: user,
     url: URL(string: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9")!,
+    created_at: .now,
     type: .photo,
     stats: nil
+  )
+  static let chat = ChatModel(
+    uuid: UUID(),
+    users: [Mocks.user],
+    messages: [message],
+    discovery_string: "xxx"
+  )
+  static let message = MessageModel(
+    uuid: UUID(),
+    created_at: .now,
+    author_uuid: UUID(),
+    chat_uuid: UUID(),
+    text: "Hello World"
   )
 }

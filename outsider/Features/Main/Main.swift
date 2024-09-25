@@ -44,6 +44,9 @@ struct Main {
             explore: Explore.State(
               currentUser: decoded
             ),
+            messages: Messages.State(
+              currentUser: decoded
+            ),
             currentProfile: CurrentProfile.State(
               profile: Profile.State(
                 currentUser: decoded,
@@ -69,6 +72,9 @@ struct Main {
             stories: Stories.State(currentUser: user)
           ),
           explore: Explore.State(
+            currentUser: user
+          ),
+          messages: Messages.State(
             currentUser: user
           ),
           currentProfile: CurrentProfile.State(

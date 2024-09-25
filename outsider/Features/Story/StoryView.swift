@@ -47,7 +47,7 @@ struct StoryView: View {
       
       VStack(spacing: 0) {
         HStack {
-          ForEach(store.stories[store.selectedUser] ?? []) { story in
+          ForEach(store.stories[store.selectedUser.uuid] ?? []) { story in
             RoundedRectangle(cornerRadius: 8, style: .circular)
               .frame(height: 3)
               .foregroundStyle(.white)
@@ -57,7 +57,7 @@ struct StoryView: View {
         .padding(.horizontal)
         .padding(.top)
         
-        HStack {
+        HStack(alignment: .top) {
           AsyncCachedImage(url: store.selectedUser.avatar_url) { image in
             image
               .resizable()
@@ -86,16 +86,24 @@ struct StoryView: View {
           
           Spacer()
           
-          if store.selectedStory?.author.uuid == store.currentUser.uuid {
-            Menu {
-              Button(role: .destructive, action: { store.send(.delete) }) {
-                Label("Delete", systemImage: "trash")
+          HStack(alignment: .top, spacing: 24) {
+            Text(store.selectedStory?.created_at.timeAgoDisplay() ?? "")
+              .font(.subheadline)
+              .foregroundStyle(.white)
+              .fontWeight(.medium)
+            
+            if store.selectedStory?.author.uuid == store.currentUser.uuid {
+              Menu {
+                Button(role: .destructive, action: { store.send(.delete) }) {
+                  Label("Delete", systemImage: "trash")
+                }
+              } label: {
+                Image("icon-dots")
+                  .resizable()
+                  .frame(width: 22, height: 22)
+                  .foregroundColor(.white)
               }
-            } label: {
-              Image("icon-dots")
-                .resizable()
-                .frame(width: 22, height: 22)
-                .foregroundColor(.white)
+              .disabled(store.isPending)
             }
           }
         }
@@ -152,6 +160,7 @@ struct StoryView: View {
         store.send(.initialize)
       }
     }
+    .opacity(store.isPending ? 0.6 : 1)
   }
 }
 
@@ -159,7 +168,7 @@ struct StoryView: View {
   StoryView(
     store: Store(initialState: Story.State(
       currentUser: Mocks.user,
-      stories: [Mocks.user: [Mocks.story]],
+      stories: [Mocks.user.uuid: [Mocks.story]],
       selectedUser: Mocks.user
     )) {
       Story()

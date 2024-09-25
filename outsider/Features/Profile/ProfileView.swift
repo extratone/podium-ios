@@ -97,20 +97,20 @@ struct ProfileView: View {
             .fontWeight(.medium)
           
           HStack(spacing: 12) {
-            Text("**\(store.user.following.count)** following")
+            Text("**\(store.user.following?.count ?? 0)** following")
           }
           
           if !store.isCurrent {
             Button {
-              if store.currentUser.following.contains(store.user.uuid) {
-                store.send(.unfollow(store.user.uuid))
+              if let following = store.currentUser.following, following.contains(where: { $0.following.uuid == store.user.uuid }) {
+                store.send(.unfollow(store.user))
               } else {
-                store.send(.follow(store.user.uuid))
+                store.send(.follow(store.user))
               }
             } label: {
               HStack {
                 Spacer()
-                if store.currentUser.following.contains(store.user.uuid) {
+                if let following = store.currentUser.following, following.contains(where: { $0.following.uuid == store.user.uuid }) {
                   Text("Unfollow")
                 } else {
                   Text("Follow")

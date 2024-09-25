@@ -33,15 +33,16 @@ struct Tabs {
     var camera: Camera.State
     var home: Home.State
     var explore: Explore.State
+    var messages: Messages.State
     var currentProfile: CurrentProfile.State
   }
   
   enum Action {
     case initialize
-    case subscribe
-    case onSubscribe(RealtimeChannelV2)
-    case unsubscribe
-    case onUnsubscribe
+    case subscribeStories
+    case onSubscribeStories(RealtimeChannelV2)
+    case unsubscribeStories
+    case onUnsubscribeStories
     case showBannerChanged(Bool)
     case bannerDataChanged(BannerModifier.BannerData)
     case handleBadSession
@@ -53,25 +54,27 @@ struct Tabs {
     case camera(Camera.Action)
     case home(Home.Action)
     case explore(Explore.Action)
+    case messages(Messages.Action)
     case currentProfile(CurrentProfile.Action)
   }
   
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .subscribe:
-        return .run { [currentUser = state.currentUser] send in
+      case .subscribeStories:
+        guard let following = state.currentUser.following else { return .none }
+        return .run { [following = following, currentUser = state.currentUser] send in
           let channel = supabase.channel("stories-\(currentUser.uuid.uuidString)")
           
           let insertions = channel.postgresChange(
             InsertAction.self,
             schema: "public",
             table: "stories",
-            filter: "author_uuid=in.(\(currentUser.following.map({ $0.uuidString }).joined(separator: ", ")))"
+            filter: "author_uuid=in.(\(following.map({ $0.following.uuid.uuidString }).joined(separator: ", ")))"
           )
           
           await channel.subscribe()
-          await send(.onSubscribe(channel))
+          await send(.onSubscribeStories(channel))
           
           for await insertAction in insertions {
             do {
@@ -85,6 +88,7 @@ struct Tabs {
                     uuid,
                     url,
                     type,
+                    created_at,
                     author:users(*),
                     stats:stories_stats(*)
                   """
@@ -101,29 +105,29 @@ struct Tabs {
           }
         }
         
-      case .onSubscribe(let channel):
+      case .onSubscribeStories(let channel):
         state.channel = channel
         return .none
         
-      case .onUnsubscribe:
+      case .onUnsubscribeStories:
         state.channel = nil
         return .none
         
       case .onInsertStory(.success(let story)):
-        if state.home.stories.stories[story.author] == nil {
-          state.home.stories.stories[story.author] = []
+        if state.home.stories.stories[story.author.uuid] == nil {
+          state.home.stories.stories[story.author.uuid] = []
         }
-        state.home.stories.stories[story.author]?.append(story)
+        state.home.stories.stories[story.author.uuid]?.append(story)
         return .none
         
       case .onInsertStory(.failure(let error)):
         print(error)
         return .none
         
-      case .unsubscribe:
+      case .unsubscribeStories:
         return .run { [channel = state.channel] send in
           await channel?.unsubscribe()
-          await send(.onUnsubscribe)
+          await send(.onUnsubscribeStories)
         }
         
       case .onSelectionChanged(let selection):
@@ -149,20 +153,22 @@ struct Tabs {
         
       case .initialize:
         return .merge(
-          .run { send in
-            do {
-              try await supabase.auth.refreshSession()
-            } catch {
-              await send(.handleBadSession)
-            }
-          },
+//          .run { send in
+//            do {
+//              try await supabase.auth.refreshSession()
+//            } catch {
+//              await send(.handleBadSession)
+//            }
+//          },
           .run { send in
             await send(.currentProfile(.profile(.fetchProfile)))
           },
           .run { send in
-            await send(.unsubscribe)
+            await send(.messages(.fetchChats))
+          },
+          .run { send in
             await send(.home(.stories(.fetchStories)))
-            await send(.subscribe)
+            await send(.subscribeStories)
           }
         )
         
@@ -174,7 +180,12 @@ struct Tabs {
         state.currentProfile.profile.posts.insert(Post.State(currentUser: state.currentUser, post: post), at: 0)
         return .none
         
-      case .home(.send(.didSend(.failure(let error)))):
+      case .home(.send(.didSend(.failure(let error)))),
+          .camera(.didSend(.failure(let error))),
+          .home(.stories(.story(.presented(.didDelete(.failure(let error)))))),
+          .messages(.chats(.element(id: _, action: .didSendMessage(.failure(let error))))),
+          .home(.posts(.element(id: _, action: .didDelete(.failure(let error))))):
+        state.home.isLoading = false
         state.bannerData = BannerModifier.BannerData(
           title: "Error",
           detail: error.localizedDescription,
@@ -206,34 +217,39 @@ struct Tabs {
         state.selection = 0
         return .none
         
-      case .home(.path(.element(_, .profile(.didFollow(.success(let uuid)))))):
-        state.currentUser.following.append(uuid)
-        state.home.currentUser.following.append(uuid)
-        state.home.stories.currentUser.following.append(uuid)
-        state.currentProfile.profile.currentUser.following.append(uuid)
+      case .home(.path(.element(_, .profile(.didFollow(.success(let user)))))),
+          .explore(.path(.element(_, action: .profile(.didFollow(.success(let user)))))):
+        let following = FollowingModel(following: user)
+        state.currentUser.following?.append(following)
+        state.home.currentUser.following?.append(following)
+        state.home.stories.currentUser.following?.append(following)
+        state.currentProfile.profile.currentUser.following?.append(following)
+        state.messages.currentUser.following?.append(following)
         if let encoded = try? JSONEncoder().encode(state.currentUser) {
           UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
         }
         return .run { send in
-          await send(.unsubscribe)
+          await send(.unsubscribeStories)
           await send(.home(.fetchPosts))
           await send(.home(.stories(.fetchStories)))
-          await send(.subscribe)
+          await send(.subscribeStories)
         }
         
-      case .home(.path(.element(_, .profile(.didUnfollow(.success(let uuid)))))):
-        state.currentUser.following.removeAll(where: { $0 == uuid })
-        state.home.currentUser.following.removeAll(where: { $0 == uuid })
-        state.home.stories.currentUser.following.removeAll(where: { $0 == uuid })
-        state.currentProfile.profile.currentUser.following.removeAll(where: { $0 == uuid })
+      case .home(.path(.element(_, .profile(.didUnfollow(.success(let user)))))),
+          .explore(.path(.element(_, action: .profile(.didUnfollow(.success(let user)))))):
+        state.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.home.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.home.stories.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.currentProfile.profile.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.messages.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
         if let encoded = try? JSONEncoder().encode(state.currentUser) {
           UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
         }
         return .run { send in
-          await send(.unsubscribe)
+          await send(.unsubscribeStories)
           await send(.home(.fetchPosts))
           await send(.home(.stories(.fetchStories)))
-          await send(.subscribe)
+          await send(.subscribeStories)
         }
         
       case .home(_):
@@ -275,6 +291,9 @@ struct Tabs {
       case .bannerDataChanged(let bannerData):
         state.bannerData = bannerData
         return .none
+        
+      case .messages:
+        return .none
       }
     }
     
@@ -288,6 +307,10 @@ struct Tabs {
     
     Scope(state: \.explore, action: \.explore) {
       Explore()
+    }
+    
+    Scope(state: \.messages, action: \.messages) {
+      Messages()
     }
     
     Scope(state: \.currentProfile, action: \.currentProfile) {

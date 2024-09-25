@@ -77,7 +77,17 @@ struct SignIn {
           do {
             let user: UserModel = try await supabase
               .from("users")
-              .select()
+              .select(
+                """
+                  uuid,
+                  username,
+                  display_name,
+                  avatar_url,
+                  following:users_following!users_following_user_uuid_fkey(
+                    following:users!users_following_following_user_uuid_fkey(*)
+                  )
+                """
+              )
               .eq("uuid", value: uuid)
               .limit(1)
               .single()
