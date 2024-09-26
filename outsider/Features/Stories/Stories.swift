@@ -57,6 +57,8 @@ struct Stories {
           var following = currentUser.following ?? []
           following.append(FollowingModel(following: currentUser))
           
+          let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+          
           do {
             let stories: [StoryModel] = try await supabase
               .from("stories")
@@ -71,6 +73,7 @@ struct Stories {
                 """
               )
               .in("author.uuid", values: following.compactMap({ $0.following.uuid }))
+              .gt("created_at", value: date.ISO8601Format())
               .order("created_at", ascending: true)
               .execute()
               .value

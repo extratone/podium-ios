@@ -28,6 +28,13 @@ struct Tabs {
     var selection: Int?
     var tabSelection: TabSelection = .home
     var channel: RealtimeChannelV2?
+    var unreadCount: Int {
+      messages.chats.count { chat in
+        chat.chat.messages?.contains(where: { message in
+          !message.readBy.contains(where: { $0.read_by == currentUser.uuid })
+        }) ?? false
+      }
+    }
     
     // Sub states
     var camera: Camera.State
@@ -153,13 +160,13 @@ struct Tabs {
         
       case .initialize:
         return .merge(
-//          .run { send in
-//            do {
-//              try await supabase.auth.refreshSession()
-//            } catch {
-//              await send(.handleBadSession)
-//            }
-//          },
+          //          .run { send in
+          //            do {
+          //              try await supabase.auth.refreshSession()
+          //            } catch {
+          //              await send(.handleBadSession)
+          //            }
+          //          },
           .run { send in
             await send(.currentProfile(.profile(.fetchProfile)))
           },
@@ -181,7 +188,6 @@ struct Tabs {
         return .none
         
       case .home(.send(.didSend(.failure(let error)))),
-          .camera(.didSend(.failure(let error))),
           .home(.stories(.story(.presented(.didDelete(.failure(let error)))))),
           .messages(.chats(.element(id: _, action: .didSendMessage(.failure(let error))))),
           .home(.posts(.element(id: _, action: .didDelete(.failure(let error))))):
@@ -258,18 +264,36 @@ struct Tabs {
       case .explore:
         return .none
         
-      case .camera(.send):
+      case .camera(.cameraSend(.send)):
         state.selection = 1
         state.home.isLoading = true
         return .none
         
-      case .camera(.didSend(.success(_))):
+      case .camera(.cameraSend(.didSendStory(.success(_)))):
         state.home.isLoading = false
         return .run { send in
           await send(.home(.stories(.fetchStories)))
         }
         
-      case .camera:
+      case .camera(.cameraSend(.didSendMessages)):
+        state.home.isLoading = false
+        return .none
+        
+      case .camera(.cameraSend(.didSendMessage(.success(let message)))):
+        state.messages.chats[id: message.chat_uuid]?.chat.messages?.append(message)
+        return .none
+        
+      case .camera(.cameraSend(.didCreateChat(.success((let chat, _, _))))):
+        state.messages.chats.insert(Chat.State(
+          currentUser: state.currentUser,
+          chat: chat
+        ), at: 0)
+        return .run { send in
+          await send(.messages(.unsubscribeMessages))
+          await send(.messages(.subscribeMessages))
+        }
+        
+      case .camera(_):
         return .none
         
       case .currentProfile(.profile(.didUpload)):

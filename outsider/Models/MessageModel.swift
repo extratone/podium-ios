@@ -14,6 +14,9 @@ struct MessageModel: Equatable, Codable, Identifiable {
   let author_uuid: UUID
   let chat_uuid: UUID
   let text: String?
+  var readBy: [MessageStatsModel]
+  let type: MediaType
+  let url: URL?
 }
 
 struct MessageModelPlain: Equatable, Codable, Identifiable {
@@ -23,4 +26,6 @@ struct MessageModelPlain: Equatable, Codable, Identifiable {
   let author_uuid: UUID
   let chat_uuid: UUID
   let text: String?
+  let type: MediaType
+  let url: URL?
 }

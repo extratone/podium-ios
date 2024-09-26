@@ -16,34 +16,10 @@ struct ChatView: View {
       ScrollView {
         VStack(spacing: 4) {
           ForEach(store.chat.messages ?? []) { message in
-            if message.author_uuid == store.currentUser.uuid {
-              HStack(alignment: .bottom) {
+            HStack(alignment: .bottom) {
+              if message.author_uuid == store.currentUser.uuid {
                 Spacer()
-                
-                if let text = message.text {
-                  Text(text)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 14)
-                    .background(.colorBackgroundPrimary)
-                    .clipShape(Capsule())
-                }
-                
-                AsyncCachedImage(url: store.currentUser.avatar_url) { image in
-                  image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 32, height: 32)
-                    .clipShape(Circle())
-                } placeholder: {
-                  Circle()
-                    .frame(width: 32, height: 32)
-                    .foregroundStyle(.colorBackgroundPrimary)
-                }
-              }
-              .padding(.horizontal)
-            } else {
-              HStack(alignment: .bottom) {
+              } else {
                 AsyncCachedImage(url: store.chat.users.first(where: { $0.uuid == message.author_uuid })?.avatar_url) { image in
                   image
                     .resizable()
@@ -55,27 +31,57 @@ struct ChatView: View {
                     .frame(width: 32, height: 32)
                     .foregroundStyle(.colorBackgroundPrimary)
                 }
+              }
+              
+              VStack(alignment: .leading) {
+                if let url = message.url {
+                  Button {
+                    store.send(.presentMedia(message))
+                  } label: {
+                    AsyncCachedImage(url: url) { image in
+                      image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 200, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
+                        .background {
+                          RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                .fill(.colorBackgroundPrimary)
+                                .stroke(.colorBackgroundPrimary, lineWidth: 3)
+                        }
+                    } placeholder: {
+                      RoundedRectangle(cornerRadius: 13, style: .continuous)
+                        .frame(width: 200, height: 120)
+                        .foregroundStyle(.colorBackgroundPrimary)
+                    }
+                  }
+                }
                 
                 if let text = message.text {
                   Text(text)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(message.author_uuid == store.currentUser.uuid ? .white : .colorTextPrimary)
                     .fontWeight(.medium)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 14)
-                    .background(.colorMessage)
+                    .background(message.author_uuid == store.currentUser.uuid ? .colorMessage : .colorBackgroundPrimary)
                     .clipShape(Capsule())
                 }
-                
+              }
+              
+              if message.author_uuid != store.currentUser.uuid {
                 Spacer()
               }
-              .padding(.horizontal)
             }
+            .padding(.horizontal)
           }
         }
         .padding(.vertical)
       }
       .scrollDismissesKeyboard(.interactively)
       .defaultScrollAnchor(.bottom)
+      .sheet(item: $store.scope(state: \.media, action: \.media)) { store in
+        MediaView(store: store)
+      }
       
       HStack {
         TextField("Message...", text: $store.message.sending(\.messageChanged))

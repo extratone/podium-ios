@@ -57,14 +57,38 @@ class Mocks {
   static let chat = ChatModel(
     uuid: UUID(),
     users: [Mocks.user],
-    messages: [message],
-    discovery_string: "xxx"
+    messages: [message, photoMessage, ownMessage],
+    discovery_string: "xxx",
+    members: [Mocks.user.uuid]
   )
   static let message = MessageModel(
     uuid: UUID(),
     created_at: .now,
     author_uuid: UUID(),
     chat_uuid: UUID(),
-    text: "Hello World"
+    text: "Hello World",
+    readBy: [],
+    type: .text,
+    url: nil
+  )
+  static let ownMessage = MessageModel(
+    uuid: UUID(),
+    created_at: .now,
+    author_uuid: user.uuid,
+    chat_uuid: UUID(),
+    text: "Hello World",
+    readBy: [],
+    type: .text,
+    url: nil
+  )
+  static let photoMessage = MessageModel(
+    uuid: UUID(),
+    created_at: .now,
+    author_uuid: UUID(),
+    chat_uuid: UUID(),
+    text: "Hello World",
+    readBy: [],
+    type: .photo,
+    url: URL(string: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9")!
   )
 }

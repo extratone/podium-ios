@@ -18,32 +18,32 @@ struct Camera {
   struct State: Equatable {
     var currentUser: UserModel
     var imageSelection: PhotosPickerItem?
-    var image: UIImage?
-    var video: Video?
+    var selectedVideo: URL?
+    var selectedPhoto: Data?
+    var previewImage: Image?
     var queuePlayer: AVQueuePlayer?
     var playerLooper: AVPlayerLooper?
     var camera = CameraManager()
-    var movieFileUrl: URL?
-    var previewImage: Image?
-    var photoToken: Data?
     var isRecording = false
     var isPending = false
+    var isCameraSendPresented = false
     var hasMedia: Bool {
-      image != nil || queuePlayer != nil || photoToken != nil
+      selectedPhoto != nil || selectedVideo != nil
     }
+    
+    // Sub states
+    var cameraSend: CameraSend.State
   }
   
   enum Action {
     case initialize
     case imageSelectionChanged(PhotosPickerItem?)
-    case didImageSelect(UIImage?)
-    case send(Source)
-    case didSend(Result<StoryModel, Error>)
+    case didImageSelect(Data)
     case reset
     case handleCameraPreviews
     case onHandleCameraPreviews(Image?)
     case handleCameraVideo
-    case onHandleCameraVideo(URL?)
+    case onHandleCameraVideo(URL?, Data)
     case handleCameraPhoto
     case onHandleCameraPhoto(Data?)
     case startPreview
@@ -52,12 +52,10 @@ struct Camera {
     case stopRecording
     case takePhoto
     case changeZoom(CGFloat)
-  }
-  
-  enum Source {
-    case cameraRollPhoto
-    case photo
-    case video
+    case presentCameraSend(Bool)
+    
+    // Sub actions
+    case cameraSend(CameraSend.Action)
   }
   
   var body: some Reducer<State, Action> {
@@ -70,6 +68,10 @@ struct Camera {
           await send(.handleCameraPhoto)
         }
         
+      case .presentCameraSend(let isPresented):
+        state.isCameraSendPresented = isPresented
+        return .none
+        
       case .startPreview:
         state.camera.isPreviewPaused = false
         return .none
@@ -81,19 +83,26 @@ struct Camera {
       case .handleCameraVideo:
         return .run { [stream = state.camera.movieFileStream] send in
           for await url in stream {
+            let asset = AVAsset(url: url)
+            let exportSession = asset.createExportSession()
+            await exportSession?.export()
             Task { @MainActor in
-              send(.onHandleCameraVideo(url))
+              if let data = try? Data(contentsOf: exportSession!.outputURL!) {
+                send(.onHandleCameraVideo(url, data))
+              }
             }
           }
         }
         
-      case .onHandleCameraVideo(let url):
+      case .onHandleCameraVideo(let url, let data):
         if let url = url {
           let playerItem = AVPlayerItem(url: url)
           state.queuePlayer = AVQueuePlayer(items: [playerItem])
           state.playerLooper = AVPlayerLooper(player: state.queuePlayer!, templateItem: playerItem)
         }
-        state.movieFileUrl = url
+        state.selectedVideo = url
+        state.cameraSend.mediaData = data
+        state.cameraSend.mediaType = .video
         return .none
         
       case .handleCameraPhoto:
@@ -109,10 +118,10 @@ struct Camera {
         }
         
       case .onHandleCameraPhoto(let data):
-        state.photoToken = data
-        return .run { send in
-          
-        }
+        state.selectedPhoto = data
+        state.cameraSend.mediaData = data
+        state.cameraSend.mediaType = .photo
+        return .none
         
       case .handleCameraPreviews:
         return .run { [previewStream = state.camera.previewStream] send in
@@ -141,9 +150,7 @@ struct Camera {
       case .stopRecording:
         state.camera.stopRecordingVideo()
         state.isRecording = false
-        return .run { send in
-          
-        }
+        return .none
         
       case .changeZoom(let zoom):
         let factor = zoom < 1 ? 1 : zoom
@@ -159,188 +166,39 @@ struct Camera {
         }
         
       case .reset:
-        state.image = nil
         state.queuePlayer?.pause()
         state.queuePlayer = nil
-        state.video = nil
+        state.selectedVideo = nil
+        state.selectedPhoto = nil
         state.imageSelection = nil
-        state.movieFileUrl = nil
-        state.photoToken = nil
         return .run { send in
           await send(.changeZoom(1))
         }
         
-      case .send(let source):
-        state.isPending = true
-        switch source {
-        case .photo:
-          return .run { [photo = state.photoToken, currentUser = state.currentUser] send in
-            guard let photo = photo else { return }
-            do {
-              let storyUuid = UUID()
-              try await supabase.storage
-                .from("stories")
-                .upload(
-                  path: "\(storyUuid)/\(storyUuid).jpg",
-                  file: photo,
-                  options: FileOptions(upsert: true)
-                )
-              
-              let publicURL = try supabase.storage
-                .from("stories")
-                .getPublicURL(path: "\(storyUuid)/\(storyUuid).jpg")
-              
-              let story: StoryModel = try await supabase
-                .from("stories")
-                .insert(StoryModelInsert(
-                  uuid: storyUuid,
-                  author_uuid: currentUser.uuid,
-                  url: publicURL,
-                  type: .photo
-                ))
-                .select(
-                  """
-                    uuid,
-                    url,
-                    type,
-                    created_at,
-                    author:users(*),
-                    stats:stories_stats(*)
-                  """
-                )
-                .single()
-                .execute()
-                .value
-              
-              await send(.didSend(.success(story)))
-            } catch {
-              await send(.didSend(.failure(error)))
-            }
-          }
-          
-        case .video:
-          return .run { [video = state.movieFileUrl, currentUser = state.currentUser] send in
-            guard let videoUrl = video else { return }
-            do {
-              let storyUuid = UUID()
-              let asset = AVAsset(url: videoUrl)
-              let exportSession = asset.createExportSession(uuid: storyUuid.uuidString)
-              await exportSession?.export()
-              let data = try? Data(contentsOf: exportSession!.outputURL!)
-              
-              try await supabase.storage
-                .from("stories")
-                .upload(
-                  path: "\(storyUuid)/\(storyUuid).mp4",
-                  file: data!,
-                  options: FileOptions(upsert: true)
-                )
-              
-              let publicURL = try supabase.storage
-                .from("stories")
-                .getPublicURL(path: "\(storyUuid)/\(storyUuid).mp4")
-              
-              let story: StoryModel = try await supabase
-                .from("stories")
-                .insert(StoryModelInsert(
-                  uuid: storyUuid,
-                  author_uuid: currentUser.uuid,
-                  url: publicURL,
-                  type: .video
-                ))
-                .select(
-                  """
-                    uuid,
-                    url,
-                    type,
-                    created_at,
-                    author:users(*),
-                    stats:stories_stats(*)
-                  """
-                )
-                .single()
-                .execute()
-                .value
-              
-              await send(.didSend(.success(story)))
-            } catch {
-              await send(.didSend(.failure(error)))
-            }
-          }
-          
-        case .cameraRollPhoto:
-          let image = state.image
-          state.imageSelection = nil
-          state.image = nil
-          
-          return .run { [currentUser = state.currentUser] send in
-            do {
-              let storyUuid = UUID()
-              
-              try await supabase.storage
-                .from("stories")
-                .upload(
-                  path: "\(storyUuid)/\(storyUuid).jpg",
-                  file: image!.jpegData(compressionQuality: 0.8)!,
-                  options: FileOptions(upsert: true)
-                )
-              
-              let publicURL = try supabase.storage
-                .from("stories")
-                .getPublicURL(path: "\(storyUuid)/\(storyUuid).jpg")
-              
-              let story: StoryModel = try await supabase
-                .from("stories")
-                .insert(StoryModelInsert(
-                  uuid: storyUuid,
-                  author_uuid: currentUser.uuid,
-                  url: publicURL,
-                  type: .photo
-                ))
-                .select(
-                  """
-                    uuid,
-                    url,
-                    type,
-                    created_at,
-                    author:users(*),
-                    stats:stories_stats(*)
-                  """
-                )
-                .single()
-                .execute()
-                .value
-              
-              await send(.didSend(.success(story)))
-            } catch {
-              await send(.didSend(.failure(error)))
-            }
-          }
-        }
-        
-      case .didSend(.success(_)):
-        state.isPending = false
-        return .run { send in
-          await send(.reset)
-        }
-        
-      case .didSend(.failure(let error)):
-        state.isPending = false
-        print(error)
-        return .none
-        
       case .imageSelectionChanged(let imageSelection):
         state.imageSelection = imageSelection
         return .run { send in
-          let image = try await imageSelection!.loadTransferable(type: Data.self)!
-          let uiImage = UIImage(data: image)?.resizeImage(targetSize: CGSize(width: 1600, height: 1600))
-          await send(.didImageSelect(uiImage))
+          let imageData = try await imageSelection!.loadTransferable(type: Data.self)!
+          await send(.didImageSelect(imageData))
         }
         
-      case .didImageSelect(let image):
-        state.image = image
+      case .didImageSelect(let data):
+        state.selectedPhoto = data
+        state.cameraSend.mediaData = data
+        state.cameraSend.mediaType = .photo
+        return .none
+        
+      case .cameraSend(.send):
+        state.isCameraSendPresented = false
+        return .none
+        
+      case .cameraSend(_):
         return .none
       }
+    }
+    
+    Scope(state: \.cameraSend, action: \.cameraSend) {
+      CameraSend()
     }
   }
 }

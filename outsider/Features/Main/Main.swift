@@ -34,7 +34,10 @@ struct Main {
           state.tabs = Tabs.State(
             currentUser: decoded,
             camera: Camera.State(
-              currentUser: decoded
+              currentUser: decoded,
+              cameraSend: CameraSend.State(
+                currentUser: decoded
+              )
             ),
             home: Home.State(
               currentUser: decoded,
@@ -64,7 +67,10 @@ struct Main {
         state.tabs = Tabs.State(
           currentUser: user,
           camera: Camera.State(
-            currentUser: user
+            currentUser: user,
+            cameraSend: CameraSend.State(
+              currentUser: user
+            )
           ),
           home: Home.State(
             currentUser: user,

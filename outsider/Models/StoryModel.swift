@@ -7,9 +7,10 @@
 
 import Foundation
 
-enum StoryType: String, Codable {
+enum MediaType: String, Codable {
   case photo
   case video
+  case text
 }
 
 struct StoryModel: Codable, Equatable, Identifiable, Hashable {
@@ -18,7 +19,7 @@ struct StoryModel: Codable, Equatable, Identifiable, Hashable {
   let author: UserModel
   let url: URL
   let created_at: Date
-  let type: StoryType
+  let type: MediaType
   var stats: [StoryStatsModel]?
 }
 
@@ -26,5 +27,5 @@ struct StoryModelInsert: Codable {
   let uuid: UUID
   let author_uuid: UUID
   let url: URL
-  let type: StoryType
+  let type: MediaType
 }

@@ -57,6 +57,14 @@ struct MessagesView: View {
                   .foregroundStyle(.colorTextSecondary)
                   .lineLimit(1)
               }
+              
+              Spacer()
+              
+              if chatStore.unreadCount > 0 {
+                Circle()
+                  .frame(width: 8, height: 8)
+                  .foregroundStyle(.colorPrimary)
+              }
             }
           }
           .listRowSeparator(.hidden)
@@ -79,6 +87,9 @@ struct MessagesView: View {
               .resizable()
           }
         }
+      }
+      .onAppear {
+        store.send(.initialize)
       }
     } destination: { store in
       switch store.case {

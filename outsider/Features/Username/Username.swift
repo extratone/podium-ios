@@ -42,10 +42,19 @@ struct Username {
                 uuid: uuid,
                 username: username,
                 display_name: nil,
-                avatar_url: nil,
-                following: []
+                avatar_url: nil
               ))
-              .select()
+              .select(
+                """
+                  uuid,
+                  username,
+                  display_name,
+                  avatar_url,
+                  following:users_following!users_following_user_uuid_fkey(
+                    following:users!users_following_following_user_uuid_fkey(*)
+                  )
+                """
+              )
               .single()
               .execute()
               .value

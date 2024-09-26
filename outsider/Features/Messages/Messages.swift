@@ -77,6 +77,7 @@ struct Messages {
               .from("chats")
               .insert(ChatModelInsert(
                 uuid: chatUuid,
+                members: tokens.map({ $0.following.uuid }),
                 discovery_string: tokens
                   .map({ $0.following.uuid.uuidString })
                   .sorted()
@@ -107,20 +108,14 @@ struct Messages {
             
             try await supabase
               .from("messages")
-              .insert(MessageModel(
+              .insert(MessageModelPlain(
                 uuid: messageUuid,
-                created_at: .now,
+                created_at: Date.now.ISO8601Format(),
                 author_uuid: currentUser.uuid,
                 chat_uuid: chatUuid,
-                text: text
-              ))
-              .execute()
-            
-            try await supabase
-              .from("chats_messages")
-              .insert(ChatMessageModel(
-                chat_uuid: chatUuid,
-                message_uuid: messageUuid
+                text: text,
+                type: .text,
+                url: nil
               ))
               .execute()
           } catch {
@@ -212,6 +207,7 @@ struct Messages {
                   """
                     uuid,
                     discovery_string,
+                    members,
                     users(*),
                     messages(*)
                   """
@@ -274,13 +270,26 @@ struct Messages {
             do {
               let jsonData = try JSONEncoder().encode(insertAction.record)
               let messagePlain = try JSONDecoder().decode(MessageModelPlain.self, from: jsonData)
-              let message = MessageModel(
-                uuid: messagePlain.uuid,
-                created_at: .now,
-                author_uuid: messagePlain.author_uuid,
-                chat_uuid: messagePlain.chat_uuid,
-                text: messagePlain.text
-              )
+              
+              let message: MessageModel = try await supabase
+                .from("messages")
+                .select(
+                  """
+                    uuid,
+                    text,
+                    author_uuid,
+                    created_at,
+                    type,
+                    url,
+                    readBy:messages_stats(*),
+                    chat_uuid
+                  """
+                )
+                .eq("uuid", value: messagePlain.uuid)
+                .single()
+                .execute()
+                .value
+              
               await send(.onInsertMessage(.success(message)))
             } catch {
               await send(.onInsertMessage(.failure(error)))
@@ -324,7 +333,7 @@ struct Messages {
         return .none
         
       case .fetchChats:
-        return .run { send in
+        return .run { [currentUser = state.currentUser] send in
           await send(.unsubscribeChats)
           await send(.unsubscribeMessages)
           
@@ -335,12 +344,14 @@ struct Messages {
                 """
                   uuid,
                   discovery_string,
+                  members,
                   users(*),
-                  messages(*)
+                  messages(*, readBy:messages_stats(*))
                 """
               )
-              .order("created_at", ascending: false, nullsFirst: false, referencedTable: "messages")
-              .limit(1, referencedTable: "messages")
+              .contains("members", value: "{\(currentUser.uuid.uuidString)}")
+              .order("created_at", ascending: true, nullsFirst: false, referencedTable: "messages")
+              .limit(20, referencedTable: "messages")
               .execute()
               .value
             
@@ -367,8 +378,31 @@ struct Messages {
       case .didFetchChats(.failure(let error)):
         print(error)
         return .none
+      
+      case .path(.element(_, action: .chat(.didMarkAsRead(.success(let stats))))),
+          .chats(.element(_, action: .didMarkAsRead(.success(let stats)))):
+        if let id = stats.first?.chat_uuid {
+          var temp = state.chats[id: id]?.chat.messages
+          stats.forEach { stat in
+            temp = temp?.map { message in
+              if message.uuid == stat.message_uuid {
+                var tmp = message
+                tmp.readBy.append(MessageStatsModel(
+                  uuid: stat.uuid,
+                  message_uuid: stat.message_uuid,
+                  read_by: stat.read_by,
+                  chat_uuid: stat.chat_uuid
+                ))
+                return tmp
+              }
+              return message
+            }
+          }
+          state.chats[id: id]?.chat.messages = temp
+        }
+        return .none
         
-      case .chats:
+      case .chats(_):
         return .none
         
       case .path(.element(_, action: .chat(.didFetchMessages(.success(let messages))))):

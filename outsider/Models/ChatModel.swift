@@ -13,10 +13,12 @@ struct ChatModel: Equatable, Codable, Identifiable {
   let users: [UserModel]
   var messages: [MessageModel]?
   let discovery_string: String
+  let members: [UUID]
 }
 
 struct ChatModelInsert: Equatable, Codable {
   let uuid: UUID
+  let members: [UUID]
   let discovery_string: String
 }
 

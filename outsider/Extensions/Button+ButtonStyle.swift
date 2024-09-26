@@ -70,6 +70,28 @@ struct LinkButton: ButtonStyle {
   }
 }
 
+struct SendButton: ButtonStyle {
+  @Environment(\.isEnabled) var isEnabled
+  
+  func makeBody(configuration: Configuration) -> some View {
+    HStack(spacing: 0) {
+      configuration.label
+        .fontWeight(.semibold)
+        .foregroundStyle(.black)
+      
+      Image("icon-send")
+        .resizable()
+        .frame(width: 20, height: 20)
+        .foregroundStyle(.black)
+    }
+    .padding(.vertical, 12)
+    .padding(.leading, 16)
+    .padding(.trailing, 8)
+    .background(.yellow)
+    .clipShape(Capsule())
+  }
+}
+
 #Preview {
   VStack {
     Button {
@@ -115,5 +137,12 @@ struct LinkButton: ButtonStyle {
       Text("Follow")
     }
     .buttonStyle(PrimarySmallButton())
+    
+    Button {
+      
+    } label: {
+      Text("Send")
+    }
+    .buttonStyle(SendButton())
   }
 }

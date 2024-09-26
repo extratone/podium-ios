@@ -8,7 +8,7 @@
 import AVKit
 
 extension AVAsset {
-  func createExportSession(uuid: String) -> AVAssetExportSession? {
+  func createExportSession() -> AVAssetExportSession? {
     guard let track = self.tracks(withMediaType: AVMediaType.video).first else { return nil }
     let size = track.naturalSize.applying(track.preferredTransform)
     let naturalWidth = abs(size.width)
@@ -28,7 +28,7 @@ extension AVAsset {
     let renderWidth = renderHeight * 9 / 16
     cropScaleComposition.renderSize = CGSize(width: renderWidth, height: renderHeight)
     exportSession?.videoComposition = cropScaleComposition
-    let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + uuid + "_compressed.mp4")
+    let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + "_compressed.mp4")
     exportSession?.outputURL = compressedURL
     exportSession?.outputFileType = .mp4
     exportSession?.shouldOptimizeForNetworkUse = true

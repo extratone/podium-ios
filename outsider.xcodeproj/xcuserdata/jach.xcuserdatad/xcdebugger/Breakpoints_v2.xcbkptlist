@@ -350,8 +350,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -366,8 +366,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -398,8 +398,8 @@
             filePath = "outsider/Features/Stories/Stories.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -574,8 +574,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -590,8 +590,8 @@
             filePath = "outsider/Features/Stories/Stories.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -606,8 +606,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -686,8 +686,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "281"
-            endingLineNumber = "281"
+            startingLineNumber = "305"
+            endingLineNumber = "305"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -718,40 +718,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "91C98FD4-EBE3-481A-8C68-8A737EF98220"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "outsider/Features/Camera/Camera.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "717D7798-54B9-4239-855E-9CAA93345A95"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "outsider/Features/Camera/Camera.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "224"
-            endingLineNumber = "224"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -862,8 +830,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "347"
-            endingLineNumber = "347"
+            startingLineNumber = "358"
+            endingLineNumber = "358"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -878,8 +846,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
+            startingLineNumber = "379"
+            endingLineNumber = "379"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -894,8 +862,8 @@
             filePath = "outsider/Features/Chat/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -910,8 +878,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -920,6 +888,22 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "25E04E4C-FBB8-4D5B-9397-4D85857F06FC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/Messages/Messages.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "315"
+            endingLineNumber = "315"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3A335FCE-7112-4C11-9D10-A538CBA63819"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -935,22 +919,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3A335FCE-7112-4C11-9D10-A538CBA63819"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "outsider/Features/Messages/Messages.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "C21DC745-E3C0-4DEE-AF4A-CE71C7122CDB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -958,8 +926,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "298"
-            endingLineNumber = "298"
+            startingLineNumber = "307"
+            endingLineNumber = "307"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -974,8 +942,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "309"
+            endingLineNumber = "309"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -990,8 +958,8 @@
             filePath = "outsider/Features/Chat/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1006,8 +974,8 @@
             filePath = "outsider/Features/Chat/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1022,8 +990,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "310"
-            endingLineNumber = "310"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1038,8 +1006,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1054,8 +1022,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1070,8 +1038,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "327"
-            endingLineNumber = "327"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1086,8 +1054,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1102,8 +1070,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1118,8 +1086,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "206"
-            endingLineNumber = "206"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1134,8 +1102,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1150,8 +1118,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1166,8 +1134,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1182,8 +1150,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1198,8 +1166,8 @@
             filePath = "outsider/Features/Tabs/TabsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1214,8 +1182,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1230,8 +1198,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "260"
-            endingLineNumber = "260"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1246,8 +1214,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1342,8 +1310,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1358,8 +1326,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1374,8 +1342,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1390,8 +1358,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "228"
-            endingLineNumber = "228"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1422,8 +1390,8 @@
             filePath = "outsider/Features/Tabs/Tabs.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1438,8 +1406,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
+            startingLineNumber = "257"
+            endingLineNumber = "257"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1454,8 +1422,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "284"
-            endingLineNumber = "284"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1470,8 +1438,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "275"
-            endingLineNumber = "275"
+            startingLineNumber = "271"
+            endingLineNumber = "271"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1486,8 +1454,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1502,8 +1470,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1512,60 +1480,16 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "B67B02CC-6C53-4369-BC51-6B065A5ABAC4"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "349"
-            endingLineNumber = "349"
+            startingLineNumber = "360"
+            endingLineNumber = "360"
             landmarkName = "body"
             landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "B67B02CC-6C53-4369-BC51-6B065A5ABAC4 - 14c1b5c8c3af08c9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(10) suspend resume partial function for closure #12 @Sendable (ComposableArchitecture.Send&lt;outsider.Messages.Action&gt;) async -&gt; () in closure #1 (inout outsider.Messages.State, outsider.Messages.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Messages.Action&gt; in outsider.Messages.body.getter : some"
-                  moduleName = "outsider.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Messages/Messages.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "349"
-                  endingLineNumber = "349">
-               </Location>
-               <Location
-                  uuid = "B67B02CC-6C53-4369-BC51-6B065A5ABAC4 - 942477391d718bc8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(11) suspend resume partial function for closure #12 @Sendable (ComposableArchitecture.Send&lt;outsider.Messages.Action&gt;) async -&gt; () in closure #1 (inout outsider.Messages.State, outsider.Messages.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Messages.Action&gt; in outsider.Messages.body.getter : some"
-                  moduleName = "outsider.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Messages/Messages.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "349"
-                  endingLineNumber = "349">
-               </Location>
-               <Location
-                  uuid = "B67B02CC-6C53-4369-BC51-6B065A5ABAC4 - 171f292b5ed80ec7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(12) suspend resume partial function for closure #12 @Sendable (ComposableArchitecture.Send&lt;outsider.Messages.Action&gt;) async -&gt; () in closure #1 (inout outsider.Messages.State, outsider.Messages.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Messages.Action&gt; in outsider.Messages.body.getter : some"
-                  moduleName = "outsider.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Messages/Messages.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "349"
-                  endingLineNumber = "349">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1578,8 +1502,8 @@
             filePath = "outsider/Features/Messages/Messages.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "286"
-            endingLineNumber = "286"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1658,8 +1582,8 @@
             filePath = "outsider/Features/Stories/Stories.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1678,6 +1602,202 @@
             endingLineNumber = "257"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BA62046C-E687-4807-9A86-F7C1DD9A4269"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/Username/Username.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "BA62046C-E687-4807-9A86-F7C1DD9A4269 - ae57dd98e3ac88b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable (ComposableArchitecture.Send&lt;outsider.Username.Action&gt;) async -&gt; () in closure #1 (inout outsider.Username.State, outsider.Username.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Username.Action&gt; in outsider.Username.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Username/Username.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+               <Location
+                  uuid = "BA62046C-E687-4807-9A86-F7C1DD9A4269 - b7bea77d7b9b76b5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for closure #1 @Sendable (ComposableArchitecture.Send&lt;outsider.Username.Action&gt;) async -&gt; () in closure #1 (inout outsider.Username.State, outsider.Username.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Username.Action&gt; in outsider.Username.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Username/Username.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+               <Location
+                  uuid = "BA62046C-E687-4807-9A86-F7C1DD9A4269 - 7fd190fb3398ecba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for closure #1 @Sendable (ComposableArchitecture.Send&lt;outsider.Username.Action&gt;) async -&gt; () in closure #1 (inout outsider.Username.State, outsider.Username.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Username.Action&gt; in outsider.Username.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Username/Username.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+               <Location
+                  uuid = "BA62046C-E687-4807-9A86-F7C1DD9A4269 - 27e48c40eb9442bb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for closure #1 @Sendable (ComposableArchitecture.Send&lt;outsider.Username.Action&gt;) async -&gt; () in closure #1 (inout outsider.Username.State, outsider.Username.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Username.Action&gt; in outsider.Username.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Username/Username.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6ECC01ED-5791-468C-9CDC-97B4BBBA03A6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/CameraSend/CameraSend.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E13C3470-A17A-479B-941D-F387617B7779"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/CameraSend/CameraSend.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "686CD417-91D3-4EE2-B1ED-C8DDEC5C8FDA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/Messages/Messages.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "340"
+            endingLineNumber = "340"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "67B11456-51F5-4802-83FE-9E4F4DA39691"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "outsider/Features/Chat/Chat.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "67B11456-51F5-4802-83FE-9E4F4DA39691 - f8138cdabb936272"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 @Sendable (ComposableArchitecture.Send&lt;outsider.Chat.Action&gt;) async -&gt; () in closure #1 (inout outsider.Chat.State, outsider.Chat.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Chat.Action&gt; in outsider.Chat.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Chat/Chat.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70">
+               </Location>
+               <Location
+                  uuid = "67B11456-51F5-4802-83FE-9E4F4DA39691 - 86659c5bde4abe8c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #2 @Sendable (ComposableArchitecture.Send&lt;outsider.Chat.Action&gt;) async -&gt; () in closure #1 (inout outsider.Chat.State, outsider.Chat.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Chat.Action&gt; in outsider.Chat.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Chat/Chat.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70">
+               </Location>
+               <Location
+                  uuid = "67B11456-51F5-4802-83FE-9E4F4DA39691 - 4c7f6bd97561fa8e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for closure #2 @Sendable (ComposableArchitecture.Send&lt;outsider.Chat.Action&gt;) async -&gt; () in closure #1 (inout outsider.Chat.State, outsider.Chat.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Chat.Action&gt; in outsider.Chat.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Chat/Chat.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70">
+               </Location>
+               <Location
+                  uuid = "67B11456-51F5-4802-83FE-9E4F4DA39691 - 354c73077aab9489"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for closure #2 @Sendable (ComposableArchitecture.Send&lt;outsider.Chat.Action&gt;) async -&gt; () in closure #1 (inout outsider.Chat.State, outsider.Chat.Action) -&gt; ComposableArchitecture.Effect&lt;outsider.Chat.Action&gt; in outsider.Chat.body.getter : some"
+                  moduleName = "outsider.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/outsider/outsider/Features/Chat/Chat.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

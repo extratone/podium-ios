@@ -44,6 +44,7 @@ struct TabsView: View {
                   .tabItem {
                     Image("icon-messages")
                   }
+                  .badge(store.unreadCount)
                   .tag(Tabs.TabSelection.messages)
                 
                 CurrentProfileView(store: store.scope(state: \.currentProfile, action: \.currentProfile))
@@ -93,7 +94,10 @@ struct TabsView: View {
     store: Store(initialState: Tabs.State(
       currentUser: Mocks.user,
       camera: Camera.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.user,
+        cameraSend: CameraSend.State(
+          currentUser: Mocks.user
+        )
       ),
       home: Home.State(
         currentUser: Mocks.user,

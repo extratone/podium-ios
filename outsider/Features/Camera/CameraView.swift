@@ -16,37 +16,27 @@ struct CameraView: View {
   
   var body: some View {
     ZStack {
-      if let image = store.image {
+      if let photo = store.selectedPhoto {
         Color.black
           .overlay {
-            Image(uiImage: image)
+            Image(uiImage: UIImage(data: photo)!)
               .resizable()
               .scaledToFill()
           }
           .ignoresSafeArea()
-      } else if store.queuePlayer != nil {
+      } else if let queuePlayer = store.queuePlayer {
         GeometryReader { geometry in
-          VideoPlayer(player: store.queuePlayer)
+          VideoPlayer(player: queuePlayer)
             .disabled(true)
             .ignoresSafeArea()
             .frame(width: geometry.size.height * 16 / 9, height: geometry.size.height)
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
             .onAppear {
-              store.queuePlayer?.play()
+              queuePlayer.play()
             }
             .onDisappear {
-              store.queuePlayer?.pause()
+              queuePlayer.pause()
             }
-        }
-        .ignoresSafeArea()
-      } else if let photoToken = store.photoToken,
-                let uiImage = UIImage(data: photoToken) {
-        GeometryReader { geometry in
-          Image(uiImage: uiImage)
-            .resizable()
-            .scaledToFill()
-            .ignoresSafeArea()
-            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .ignoresSafeArea()
       } else {
@@ -124,32 +114,21 @@ struct CameraView: View {
             Spacer()
             
             Button {
-              if store.image != nil {
-                store.send(.send(.cameraRollPhoto))
-              } else if store.queuePlayer != nil {
-                store.send(.send(.video))
-              } else if store.photoToken != nil {
-                store.send(.send(.photo))
-              }
+              store.send(.presentCameraSend(true))
             } label: {
-              HStack(spacing: 0) {
-                Text("Add story")
-                  .fontWeight(.semibold)
-                  .foregroundStyle(.black)
-                
-                Image("icon-send")
-                  .resizable()
-                  .frame(width: 20, height: 20)
-                  .foregroundStyle(.black)
-              }
-              .padding(.vertical, 8)
-              .padding(.leading, 16)
-              .padding(.trailing, 8)
-              .background(.yellow)
-              .clipShape(Capsule())
+              Text("Send to")
             }
+            .buttonStyle(SendButton())
             .disabled(store.isPending)
             .opacity(store.isPending ? 0.6 : 1)
+            .sheet(isPresented: $store.isCameraSendPresented.sending(\.presentCameraSend), content: {
+              CameraSendView(store: store.scope(state: \.cameraSend, action: \.cameraSend))
+                .presentationDetents([
+                  .fraction(0.3),
+                  .medium,
+                  .large
+                ])
+            })
           }
           .padding(24)
         } else {
@@ -214,7 +193,9 @@ struct CameraView: View {
   CameraView(
     store: Store(initialState: Camera.State(
       currentUser: Mocks.user,
-      photoToken: UIImage(systemName: "apple.logo")?.withTintColor(.red).pngData()
+      cameraSend: CameraSend.State(
+        currentUser: Mocks.user
+      )
     )) {
       Camera()
     }
