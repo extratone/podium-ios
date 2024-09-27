@@ -47,6 +47,7 @@ struct Profile {
     case presentProfile(UserModel)
     case onDisplayNameChanged(String)
     case setDisplayName
+    case didSetDisplayName(Result<String, Error>)
     case follow(UserModel)
     case didFollow(Result<UserModel, Error>)
     case unfollow(UserModel)
@@ -115,17 +116,33 @@ struct Profile {
         return .none
         
       case .setDisplayName:
-        return .run { [displayName = state.displayName, currentUser = state.currentUser] send in
-          do {
-            try await supabase
-              .from("users")
-              .update(["display_name": displayName])
-              .eq("uuid", value: currentUser.uuid)
-              .execute()
-          } catch {
-            print(error)
+        let dislayNamePattern = #"^(?=.{1,40}$)[a-zA-Z]+(?:[-' ][a-zA-Z]+)*$"#
+        if state.displayName.range(of: dislayNamePattern, options: .regularExpression) == nil {
+          state.displayName = state.currentUser.display_name ?? ""
+          return .none
+        } else {
+          return .run { [displayName = state.displayName, currentUser = state.currentUser] send in
+            do {
+              try await supabase
+                .from("users")
+                .update(["display_name": displayName])
+                .eq("uuid", value: currentUser.uuid)
+                .execute()
+              
+              await send(.didSetDisplayName(.success(displayName)))
+            } catch {
+              await send(.didSetDisplayName(.failure(error)))
+            }
           }
         }
+        
+      case .didSetDisplayName(.success(let displayName)):
+        state.currentUser.display_name = displayName
+        return .none
+        
+      case .didSetDisplayName(.failure(let error)):
+        print(error)
+        return .none
         
       case .onDisplayNameChanged(let displayName):
         state.displayName = displayName

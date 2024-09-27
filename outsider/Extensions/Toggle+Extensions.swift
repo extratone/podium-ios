@@ -13,11 +13,26 @@ struct PrimaryCheckbox: ToggleStyle {
       configuration.isOn.toggle()
     }, label: {
       HStack {
-        Image(systemName: configuration.isOn ? "dot.circle" : "circle")
+        Image(systemName: configuration.isOn ? "dot.circle.fill" : "circle")
+          .foregroundStyle(.colorTextPrimary)
         
         configuration.label
       }
       .foregroundStyle(.colorTextPrimary)
     })
+  }
+}
+
+#Preview {
+  VStack {
+    Toggle(isOn: .constant(false)) {
+      Text("Label")
+    }
+    .toggleStyle(PrimaryCheckbox())
+    
+    Toggle(isOn: .constant(true)) {
+      Text("Label")
+    }
+    .toggleStyle(PrimaryCheckbox())
   }
 }

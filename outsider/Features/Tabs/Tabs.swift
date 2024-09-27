@@ -190,6 +190,7 @@ struct Tabs {
       case .home(.send(.didSend(.failure(let error)))),
           .home(.stories(.story(.presented(.didDelete(.failure(let error)))))),
           .messages(.chats(.element(id: _, action: .didSendMessage(.failure(let error))))),
+          .messages(.path(.element(_, .chat(.didSendMessage(.failure(let error)))))),
           .home(.posts(.element(id: _, action: .didDelete(.failure(let error))))):
         state.home.isLoading = false
         state.bannerData = BannerModifier.BannerData(
@@ -231,6 +232,8 @@ struct Tabs {
         state.home.stories.currentUser.following?.append(following)
         state.currentProfile.profile.currentUser.following?.append(following)
         state.messages.currentUser.following?.append(following)
+        state.camera.cameraSend.currentUser.following?.append(following)
+        state.camera.cameraSend.following.append(CameraSendRecipient.State(following: following))
         if let encoded = try? JSONEncoder().encode(state.currentUser) {
           UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
         }
@@ -248,6 +251,8 @@ struct Tabs {
         state.home.stories.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
         state.currentProfile.profile.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
         state.messages.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.camera.cameraSend.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.camera.cameraSend.following.removeAll(where: { $0.following.following.uuid == user.uuid })
         if let encoded = try? JSONEncoder().encode(state.currentUser) {
           UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
         }

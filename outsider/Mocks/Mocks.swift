@@ -28,6 +28,13 @@ class Mocks {
       ))
     ]
   )
+  static let otherUser = UserModel(
+    uuid: UUID(),
+    username: "username2",
+    display_name: "Display Name 2",
+    avatar_url: nil,
+    following: []
+  )
   static let media = MediaModel(
     uuid: UUID(),
     url: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
@@ -56,10 +63,27 @@ class Mocks {
   )
   static let chat = ChatModel(
     uuid: UUID(),
-    users: [Mocks.user],
-    messages: [message, photoMessage, ownMessage],
+    users: [Mocks.user, Mocks.otherUser],
+    messages: [photoMessage, message, ownMessage],
     discovery_string: "xxx",
     members: [Mocks.user.uuid]
+  )
+  static let chat1 = ChatModel(
+    uuid: UUID(),
+    users: [Mocks.user, Mocks.otherUser],
+    messages: [message, ownMessage],
+    discovery_string: "xxx1",
+    members: [Mocks.user.uuid]
+  )
+  static let photoMessage = MessageModel(
+    uuid: UUID(),
+    created_at: .now,
+    author_uuid: UUID(),
+    chat_uuid: UUID(),
+    text: "Hello World",
+    readBy: [],
+    type: .photo,
+    url: URL(string: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9")!
   )
   static let message = MessageModel(
     uuid: UUID(),
@@ -76,19 +100,9 @@ class Mocks {
     created_at: .now,
     author_uuid: user.uuid,
     chat_uuid: UUID(),
-    text: "Hello World",
+    text: "Own message",
     readBy: [],
     type: .text,
     url: nil
-  )
-  static let photoMessage = MessageModel(
-    uuid: UUID(),
-    created_at: .now,
-    author_uuid: UUID(),
-    chat_uuid: UUID(),
-    text: "Hello World",
-    readBy: [],
-    type: .photo,
-    url: URL(string: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9")!
   )
 }

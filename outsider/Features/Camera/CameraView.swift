@@ -56,6 +56,28 @@ struct CameraView: View {
         .onDisappear {
           store.send(.pausePreview)
         }
+        
+        if !store.isCameraAuthorized {
+          VStack {
+            Text("Camera or microphone permissions not granted.")
+              .foregroundStyle(.white)
+            Button {
+              store.send(.presentAlert(true))
+            } label: {
+              Text("Allow camera and microphone permissions")
+                .fontWeight(.semibold)
+                .foregroundStyle(.colorMessage)
+            }
+          }
+          .alert("Camera and microphone permissions", isPresented: $store.isAlertPresented.sending(\.presentAlert)) {
+            Button("Cancel", role: .cancel) { }
+            Button("Go to Settings") {
+              UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+            }
+          } message: {
+            Text("Open settings to grant permissions.")
+          }
+        }
       }
       
       VStack {
@@ -124,8 +146,7 @@ struct CameraView: View {
             .sheet(isPresented: $store.isCameraSendPresented.sending(\.presentCameraSend), content: {
               CameraSendView(store: store.scope(state: \.cameraSend, action: \.cameraSend))
                 .presentationDetents([
-                  .fraction(0.3),
-                  .medium,
+                  .fraction(0.4),
                   .large
                 ])
             })
@@ -145,32 +166,33 @@ struct CameraView: View {
             
             Spacer()
             
-            Image(systemName: "circle")
-              .symbolEffect(.pulse, isActive: store.isRecording)
-              .foregroundStyle(store.isRecording ? Color.red : Color.white)
-              .font(.system(size: 90))
-              .opacity(shutterTapped ? 0.5 : 1)
-              .onTapGesture {
-                shutterTapped = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { shutterTapped = false }
-                store.send(.takePhoto)
-              }
-              .gesture(
-                LongPressGesture(minimumDuration: 0.3)
-                  .onEnded { _ in
-                    store.send(.startRecording)
-                  }
-                  .sequenced(before: DragGesture(minimumDistance: 0).onChanged({ dragValue in
-                    if store.isRecording {
-                      let factor = 1 + (abs(dragValue.translation.height) / 100)
-                      store.send(.changeZoom(factor))
+            if store.isCameraAuthorized {
+              Image(systemName: "circle")
+                .symbolEffect(.pulse, isActive: store.isRecording)
+                .foregroundStyle(store.isRecording ? Color.red : Color.white)
+                .font(.system(size: 90))
+                .opacity(shutterTapped ? 0.5 : 1)
+                .onTapGesture {
+                  shutterTapped = true
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { shutterTapped = false }
+                  store.send(.takePhoto)
+                }
+                .gesture(
+                  LongPressGesture(minimumDuration: 0.3)
+                    .onEnded { _ in
+                      store.send(.startRecording)
                     }
-                  }))
-                  .onEnded { _ in
-                    store.send(.stopRecording)
-                    
-                  }
-              )
+                    .sequenced(before: DragGesture(minimumDistance: 0).onChanged({ dragValue in
+                      if store.isRecording {
+                        let factor = 1 + (abs(dragValue.translation.height) / 100)
+                        store.send(.changeZoom(factor))
+                      }
+                    }))
+                    .onEnded { _ in
+                      store.send(.stopRecording)
+                    }
+                )
+            }
             
             Spacer()
             

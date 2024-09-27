@@ -350,7 +350,7 @@ struct Messages {
                 """
               )
               .contains("members", value: "{\(currentUser.uuid.uuidString)}")
-              .order("created_at", ascending: true, nullsFirst: false, referencedTable: "messages")
+              .order("created_at", ascending: false, nullsFirst: false, referencedTable: "messages")
               .limit(20, referencedTable: "messages")
               .execute()
               .value

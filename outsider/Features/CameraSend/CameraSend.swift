@@ -20,6 +20,9 @@ struct CameraSend {
     var addStory = false
     var mediaData: Data?
     var mediaType: MediaType?
+    var isEnabled: Bool {
+      !following.filter({ $0.selected }).isEmpty || addStory
+    }
     
     init(currentUser: UserModel) {
       self.currentUser = currentUser
@@ -85,7 +88,7 @@ struct CameraSend {
           }
         }
         
-      case .didUploadMedia(.success((let uuid, let mediaUrl, let mediaType))):
+      case .didUploadMedia(.success((_, let mediaUrl, let mediaType))):
         let recipients = state
           .following
           .filter({ $0.selected })
@@ -109,7 +112,7 @@ struct CameraSend {
         return .none
         
       case .sendStory(let mediaType, let mediaUrl):
-        let fileExtension = mediaType == .photo ? "jpg" : "mp4"
+        state.addStory = false
         return .run { [currentUser = state.currentUser] send in
           do {
             let storyUuid = UUID()
@@ -266,8 +269,6 @@ struct CameraSend {
       case .sendMessages(let recipients, let mediaType, let mediaUrl):
         return .run { [currentUser = state.currentUser] send in
           do {
-            let messageUuid = UUID()
-            
             // Check if Chat exists for each recipient
             try await withThrowingTaskGroup(of: (UUID, Bool).self) { group in
               for recipient in recipients {
@@ -329,6 +330,11 @@ struct CameraSend {
         }
         
       case .didSendMessages:
+        state.following = IdentifiedArray(uniqueElements: state.following.map({ followingState in
+          var temp = followingState
+          temp.selected = false
+          return temp
+        }))
         return .none
         
       case .onAddStoryChange(let selected):

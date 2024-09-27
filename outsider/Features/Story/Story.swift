@@ -262,7 +262,7 @@ struct Story {
               await send(.didMarkAsViewed(.success((stat, selectedStory))))
             }
           } catch {
-            print(error)
+            await send(.didMarkAsViewed(.failure(error)))
           }
         }
         

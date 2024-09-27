@@ -30,7 +30,7 @@ struct Username {
     Reduce { state, action in
       switch action {
       case .onUsernameChanged(let username):
-        state.username = username
+        state.username = username.lowercased()
         return .none
         
       case .signUp:

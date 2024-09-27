@@ -27,6 +27,8 @@ struct Camera {
     var isRecording = false
     var isPending = false
     var isCameraSendPresented = false
+    var isCameraAuthorized = true
+    var isAlertPresented = false
     var hasMedia: Bool {
       selectedPhoto != nil || selectedVideo != nil
     }
@@ -53,6 +55,9 @@ struct Camera {
     case takePhoto
     case changeZoom(CGFloat)
     case presentCameraSend(Bool)
+    case checkAuthorization
+    case didCheckAuthorization(Bool)
+    case presentAlert(Bool)
     
     // Sub actions
     case cameraSend(CameraSend.Action)
@@ -66,7 +71,22 @@ struct Camera {
           await send(.handleCameraPreviews)
           await send(.handleCameraVideo)
           await send(.handleCameraPhoto)
+          await send(.checkAuthorization)
         }
+        
+      case .presentAlert(let isPresented):
+        state.isAlertPresented = isPresented
+        return .none
+        
+      case .checkAuthorization:
+        return .run { [camera = state.camera] send in
+          let result = await camera.checkAuthorization()
+          await send(.didCheckAuthorization(result))
+        }
+        
+      case .didCheckAuthorization(let authorized):
+        state.isCameraAuthorized = authorized
+        return .none
         
       case .presentCameraSend(let isPresented):
         state.isCameraSendPresented = isPresented
@@ -190,7 +210,9 @@ struct Camera {
         
       case .cameraSend(.send):
         state.isCameraSendPresented = false
-        return .none
+        return .run { send in
+          await send(.reset)
+        }
         
       case .cameraSend(_):
         return .none

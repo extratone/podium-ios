@@ -24,21 +24,25 @@ struct CameraSendView: View {
           }
           
           Toggle(isOn: $store.addStory.sending(\.onAddStoryChange)) {
-            AsyncCachedImage(url: store.currentUser.avatar_url) { image in
-              image
-                .resizable()
-                .scaledToFill()
-                .frame(width: 36, height: 36)
-                .clipShape(Circle())
-            } placeholder: {
-              Circle()
-                .frame(width: 36, height: 36)
-                .foregroundStyle(.colorBackgroundPrimary)
-            }
-            
-            VStack(alignment: .leading, spacing: 0) {
-              Text("Add to story")
-                .fontWeight(.medium)
+            HStack {
+              AsyncCachedImage(url: store.currentUser.avatar_url) { image in
+                image
+                  .resizable()
+                  .scaledToFill()
+                  .frame(width: 36, height: 36)
+                  .clipShape(Circle())
+              } placeholder: {
+                Circle()
+                  .frame(width: 36, height: 36)
+                  .foregroundStyle(.colorBackgroundPrimary)
+              }
+              
+              VStack(alignment: .leading, spacing: 0) {
+                Text("Add to story")
+                  .fontWeight(.medium)
+              }
+              
+              Spacer()
             }
           }
           .toggleStyle(PrimaryCheckbox())
@@ -70,6 +74,7 @@ struct CameraSendView: View {
           Text("Send")
         }
         .buttonStyle(SendButton())
+        .disabled(!store.isEnabled)
       }
       .padding(.horizontal)
     }

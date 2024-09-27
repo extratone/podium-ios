@@ -30,7 +30,9 @@ struct SettingsView: View {
       } header: {
         Text("Podium")
       } footer: {
-        Text("Version 1.0b2")
+        if let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"), let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
+          Text("Version \(version).\(build)")
+        }
       }
     }
     .navigationTitle("Settings")

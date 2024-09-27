@@ -77,9 +77,7 @@ struct TabsView: View {
       if newValue == .active {
         store.send(.messages(.subscribeMessages))
         store.send(.messages(.subscribeChats))
-      } else if newValue == .background {
-//        store.send(.messages(.unsubscribeMessages))
-//        store.send(.messages(.unsubscribeChats))
+        store.send(.home(.stories(.fetchStories)))
       }
     })
     .banner(

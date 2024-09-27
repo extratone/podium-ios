@@ -139,27 +139,34 @@ struct ProfileView: View {
         
         switch store.selectedTabIndex {
         case .posts:
-          VStack(spacing: 0) {
-            ForEach(store.scope(state: \.posts, action: \.posts)) { postStore in
-              PostView(
-                store: postStore,
-                onShowProfile: {
-                  store.send(.presentProfile(postStore.post.author))
-                },
-                onShowPost: {
-                  store.send(.presentComments(postStore.post))
-                }
-              )
-              .padding(.horizontal, 10)
-              Divider()
-                .padding(.bottom, 10)
+          VStack(alignment: .leading, spacing: 0) {
+            if store.posts.isEmpty {
+              Text("No posts.")
+                .foregroundStyle(.colorTextSecondary)
+            } else {
+              ForEach(store.scope(state: \.posts, action: \.posts)) { postStore in
+                PostView(
+                  store: postStore,
+                  onShowProfile: {
+                    store.send(.presentProfile(postStore.post.author))
+                  },
+                  onShowPost: {
+                    store.send(.presentComments(postStore.post))
+                  }
+                )
+                .padding(.horizontal, 10)
+                Divider()
+                  .padding(.bottom, 10)
+              }
             }
           }
           .animation(.spring(), value: store.posts)
         case .media:
-          Text("No media")
+          Text("No media.")
+            .foregroundStyle(.colorTextSecondary)
         case .likes:
-          Text("No likes")
+          Text("No likes.")
+            .foregroundStyle(.colorTextSecondary)
         }
       }
       .padding(.vertical, 12)

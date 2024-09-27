@@ -85,10 +85,11 @@ struct SendButton: ButtonStyle {
         .foregroundStyle(.black)
     }
     .padding(.vertical, 12)
-    .padding(.leading, 16)
-    .padding(.trailing, 8)
+    .padding(.leading, 22)
+    .padding(.trailing, 14)
     .background(.yellow)
     .clipShape(Capsule())
+    .opacity(isEnabled ? 1 : 0.5)
   }
 }
 
@@ -144,5 +145,14 @@ struct SendButton: ButtonStyle {
       Text("Send")
     }
     .buttonStyle(SendButton())
+    
+    Button {
+      
+    } label: {
+      Text("Send")
+    }
+    .disabled(true)
+    .buttonStyle(SendButton())
   }
+  .padding()
 }

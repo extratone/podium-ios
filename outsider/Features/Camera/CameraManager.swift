@@ -329,8 +329,10 @@ class CameraManager: NSObject {
     success = true
   }
   
-  
-  private func checkAuthorization() async -> Bool {
+  public func checkAuthorization() async -> Bool {
+    if AVAudioApplication.shared.recordPermission != .granted {
+      return false
+    }
     switch AVCaptureDevice.authorizationStatus(for: .video) {
     case .authorized:
       print("Camera access authorized.")

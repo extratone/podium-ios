@@ -19,6 +19,13 @@ struct Chat {
     var currentUser: UserModel
     var chat: ChatModel
     var message = ""
+    var title: String {
+      chat
+        .users
+        .filter({ $0.uuid != currentUser.uuid })
+        .map({ $0.display_name ?? $0.username })
+        .joined(separator: ", ")
+    }
     var unreadCount: Int {
       chat.messages?.count(where: { message in
         !message.readBy.contains(where: { $0.read_by == currentUser.uuid })

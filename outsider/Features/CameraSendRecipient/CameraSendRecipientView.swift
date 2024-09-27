@@ -12,8 +12,8 @@ struct CameraSendRecipientView: View {
   @Bindable var store: StoreOf<CameraSendRecipient>
   
   var body: some View {
-    HStack {
-      Toggle(isOn: $store.selected.sending(\.onSelectedChange)) {
+    Toggle(isOn: $store.selected.sending(\.onSelectedChange)) {
+      HStack {
         AsyncCachedImage(url: store.following.following.avatar_url) { image in
           image
             .resizable()
@@ -35,11 +35,11 @@ struct CameraSendRecipientView: View {
             .foregroundStyle(.colorTextSecondary)
             .fontWeight(.medium)
         }
+        
+        Spacer()
       }
-      .toggleStyle(PrimaryCheckbox())
-      
-      Spacer()
     }
+    .toggleStyle(PrimaryCheckbox())
   }
 }
 

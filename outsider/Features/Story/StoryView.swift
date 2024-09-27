@@ -151,8 +151,7 @@ struct StoryView: View {
       .sheet(item: $store.scope(state: \.stats, action: \.stats)) { store in
         StatsView(store: store)
           .presentationDetents([
-            .fraction(0.2),
-            .medium,
+            .fraction(0.3),
             .large
           ])
       }
