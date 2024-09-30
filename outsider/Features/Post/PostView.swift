@@ -27,16 +27,22 @@ struct PostView: View {
                 image
                   .resizable()
                   .scaledToFill()
-                  .frame(width: 52, height: 52)
+                  .frame(
+                    width: store.size == .small ? 42 : 52,
+                    height: store.size == .small ? 42 : 52
+                  )
                   .clipShape(Circle())
               } placeholder: {
                 Circle()
-                  .frame(width: 52, height: 52)
+                  .frame(
+                    width: store.size == .small ? 42 : 52,
+                    height: store.size == .small ? 42 : 52
+                  )
                   .foregroundStyle(.colorBackgroundPrimary)
               }
             }
           }
-          
+
           VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
               if let displayName = store.post.author.display_name {
@@ -46,7 +52,7 @@ struct PostView: View {
                   Text(displayName)
                     .foregroundStyle(.colorTextPrimary)
                     .fontWeight(.semibold)
-                    .font(.callout)
+                    .font(store.size == .small ? .subheadline : .callout)
                     .padding(.trailing, 4)
                 }
               }
@@ -56,27 +62,27 @@ struct PostView: View {
               } label: {
                 Text("@\(store.post.author.username)")
                   .foregroundStyle(.colorTextSecondary)
-                  .font(.callout)
+                  .font(store.size == .small ? .subheadline : .callout)
               }
               
               Spacer()
               
               Text(store.post.created_at.timeAgoDisplay())
                 .foregroundStyle(.colorTextSecondary)
-                .font(.caption)
+                .font(store.size == .small ? .caption : .callout)
             }
             
             VStack(alignment: .leading, spacing: 0) {
               if let text = store.post.text, !text.isEmpty {
                 Text(text)
                   .textSelection(.enabled)
-                  .font(.callout)
+                  .font(store.size == .small ? .subheadline : .callout)
                   .padding(.top, 4)
                   .foregroundStyle(.colorTextPrimary)
                   .multilineTextAlignment(.leading)
               }
               
-              if let mediaItems = store.post.media {
+              if let mediaItems = store.post.media, !mediaItems.isEmpty {
                 HStack {
                   ForEach(mediaItems) { mediaItem in
                     Button {
@@ -108,93 +114,90 @@ struct PostView: View {
                   MediaView(store: store)
                 }
               }
+              
+              HStack {
+                HStack(spacing: 4) {
+                  Image("icon-share")
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(.colorTextSecondary)
+                    .padding(.vertical, store.size == .small ? 4 : 8)
+                    .padding(.trailing, 16)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 4) {
+                  Image("icon-comments")
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(.colorTextSecondary)
+                  
+                  Text("\(store.post.commentsPlain?.count ?? 0)")
+                    .font(.caption)
+                    .foregroundStyle(.colorTextSecondary)
+                    .fontWeight(.medium)
+                }
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+                
+                Spacer()
+                
+                Button {
+                  let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                  impactMed.impactOccurred()
+                  if store.isLiked {
+                    store.send(.unlike)
+                  } else {
+                    store.send(.like)
+                  }
+                } label: {
+                  HStack(spacing: 4) {
+                    Image(store.isLiked ? "icon-like-fill" : "icon-like")
+                      .resizable()
+                      .frame(width: 16, height: 16)
+                      .foregroundColor(store.isLiked ? .colorRed : .colorTextSecondary)
+                    
+                    Text("\(store.post.likes?.count ?? 0)")
+                      .font(.caption)
+                      .foregroundStyle(.colorTextSecondary)
+                      .fontWeight(.medium)
+                  }
+                  .padding(.vertical, 8)
+                  .padding(.horizontal, 16)
+                }
+                
+                Spacer()
+                
+                Menu {
+                  Button(action: { }) {
+                    Label("Copy link", systemImage: "link")
+                  }
+                  
+                  if store.post.author.uuid == store.currentUser.uuid {
+                    Button(role: .destructive, action: { store.send(.delete) }) {
+                      Label("Delete", systemImage: "trash")
+                    }
+                  } else {
+                    Button(action: { }) {
+                      Label("Block author", systemImage: "person.slash")
+                    }
+                  }
+                } label: {
+                  Image("icon-dots")
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(.colorTextSecondary)
+                    .padding(.vertical, 8)
+                    .padding(.leading, 16)
+                }
+              }
+              .disabled(store.isPending)
+              .opacity(store.isPending ? 0.4 : 1)
             }
           }
         }
       }
-      .disabled(store.isPending)
-      .opacity(store.isPending ? 0.4 : 1)
-      
-      HStack {
-        HStack(spacing: 4) {
-          Image("icon-share")
-            .resizable()
-            .frame(width: 16, height: 16)
-            .foregroundColor(.colorTextSecondary)
-            .padding(.vertical, 8)
-            .padding(.trailing, 16)
-        }
-        
-        Spacer()
-        
-        HStack(spacing: 4) {
-          Image("icon-comments")
-            .resizable()
-            .frame(width: 16, height: 16)
-            .foregroundColor(.colorTextSecondary)
-          
-          Text("124")
-            .font(.caption)
-            .foregroundStyle(.colorTextSecondary)
-            .fontWeight(.medium)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        
-        Spacer()
-        
-        Button {
-          let impactMed = UIImpactFeedbackGenerator(style: .medium)
-          impactMed.impactOccurred()
-          if store.isLiked {
-            store.send(.unlike)
-          } else {
-            store.send(.like)
-          }
-        } label: {
-          HStack(spacing: 4) {
-            Image(store.isLiked ? "icon-like-fill" : "icon-like")
-              .resizable()
-              .frame(width: 16, height: 16)
-              .foregroundColor(store.isLiked ? .colorRed : .colorTextSecondary)
-            
-            Text("\(store.post.likes?.count ?? 0)")
-              .font(.caption)
-              .foregroundStyle(.colorTextSecondary)
-              .fontWeight(.medium)
-          }
-          .padding(.vertical, 8)
-          .padding(.horizontal, 16)
-        }
-        
-        Spacer()
-        
-        Menu {
-          Button(action: { }) {
-            Label("Copy link", systemImage: "link")
-          }
-          
-          if store.post.author.uuid == store.currentUser.uuid {
-            Button(role: .destructive, action: { store.send(.delete) }) {
-              Label("Delete", systemImage: "trash")
-            }
-          } else {
-            Button(action: { }) {
-              Label("Block author", systemImage: "person.slash")
-            }
-          }
-        } label: {
-          Image("icon-dots")
-            .resizable()
-            .frame(width: 16, height: 16)
-            .foregroundColor(.colorTextSecondary)
-            .padding(.vertical, 8)
-            .padding(.leading, 16)
-        }
-      }
-      .padding(.top, 2)
-      .padding(.bottom, 4)
-      .padding(.leading, 60)
       .disabled(store.isPending)
       .opacity(store.isPending ? 0.4 : 1)
     }
@@ -202,14 +205,51 @@ struct PostView: View {
 }
 
 #Preview {
-  PostView(
-    store: Store(initialState: Post.State(
-      currentUser: Mocks.user,
-      post: Mocks.post
-    )) {
-      Post()
-    },
-    onShowProfile: {},
-    onShowPost: {}
-  )
+  VStack(spacing: 0) {
+    PostView(
+      store: Store(initialState: Post.State(
+        size: .normal,
+        currentUser: Mocks.user,
+        post: Mocks.postText
+      )) {
+        Post()
+      },
+      onShowProfile: {},
+      onShowPost: {}
+    )
+    
+    Divider()
+      .padding(.bottom, 4)
+    
+    PostView(
+      store: Store(initialState: Post.State(
+        size: .normal,
+        currentUser: Mocks.user,
+        post: Mocks.post
+      )) {
+        Post()
+      },
+      onShowProfile: {},
+      onShowPost: {}
+    )
+    
+    Divider()
+      .padding(.bottom, 4)
+    
+    PostView(
+      store: Store(initialState: Post.State(
+        size: .small,
+        currentUser: Mocks.user,
+        post: Mocks.post
+      )) {
+        Post()
+      },
+      onShowProfile: {},
+      onShowPost: {}
+    )
+    
+    Divider()
+      .padding(.bottom, 4)
+  }
+  .padding(10)
 }

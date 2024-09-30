@@ -84,9 +84,10 @@ struct Chat {
                   chat_uuid: chat.uuid
                 )
               }) {
+              
               try await supabase
                 .from("messages_stats")
-                .insert(stats)
+                .upsert(stats, onConflict: "message_uuid, read_by", ignoreDuplicates: true)
                 .execute()
               
               await send(.didMarkAsRead(.success(stats)))
@@ -163,7 +164,8 @@ struct Chat {
                 chat_uuid: message.chat_uuid,
                 text: message.text,
                 type: message.type,
-                url: message.url
+                url: message.url,
+                author: currentUser.display_name ?? currentUser.username
               ))
               .execute()
             

@@ -12,6 +12,7 @@ struct UserModel: Codable, Equatable, Hashable, Identifiable {
   let uuid: UUID
   let username: String
   var display_name: String?
+  var fcm_tokens: [String]
   let avatar_url: URL?
   var following: [FollowingModel]?
 }

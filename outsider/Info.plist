@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Audio for videos</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Taking photos and videos</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>SUPABASE_KEY</key>

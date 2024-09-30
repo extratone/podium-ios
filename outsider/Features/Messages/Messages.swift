@@ -115,7 +115,8 @@ struct Messages {
                 chat_uuid: chatUuid,
                 text: text,
                 type: .text,
-                url: nil
+                url: nil,
+                author: currentUser.display_name ?? currentUser.username
               ))
               .execute()
           } catch {

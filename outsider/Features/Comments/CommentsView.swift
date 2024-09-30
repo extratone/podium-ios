@@ -9,12 +9,12 @@ import SwiftUI
 import ComposableArchitecture
 
 struct CommentsView: View {
-  var store: StoreOf<Comments>
+  @Bindable var store: StoreOf<Comments>
   
   var body: some View {
     VStack {
       ScrollView(showsIndicators: false) {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
           PostView(
             store: store.scope(state: \.post, action: \.post),
             onShowProfile: {
@@ -22,33 +22,66 @@ struct CommentsView: View {
             },
             onShowPost: {}
           )
+          .padding(.horizontal, 10)
+          .padding(.top, 10)
           
           Divider()
-            .padding(.bottom, 12)
+            .padding(.bottom, 10)
           
-          Text("Comments")
-            .fontWeight(.medium)
-            .font(.subheadline)
+          ForEach(store.scope(state: \.posts, action: \.posts)) { postStore in
+            PostView(
+              store: postStore,
+              onShowProfile: {
+                store.send(.presentProfile(postStore.post.author))
+              },
+              onShowPost: {
+//                store.send(.presentComments(postStore.post))
+              }
+            )
+            .padding(.horizontal, 10)
+            
+            Divider()
+              .padding(.bottom, 10)
+          }
         }
-        .padding()
       }
       
-      TextField("Comment...", text: .constant(""))
+      TextField("Comment...", text: $store.text.sending(\.onTextChange))
         .textFieldStyle(PrimaryTextField())
         .padding()
+        .onSubmit {
+          store.send(.sendComment)
+        }
     }
     .navigationTitle("Post")
     .navigationBarTitleDisplayMode(.inline)
+    .onAppear {
+      store.send(.fetchComments)
+    }
   }
 }
 
 #Preview {
   CommentsView(
     store: Store(initialState: Comments.State(
+      currentUser: Mocks.user,
       post: Post.State(
+        size: .normal,
         currentUser: Mocks.user,
         post: Mocks.post
-      )
+      ),
+      posts: [
+        Post.State(
+          size: .small,
+          currentUser: Mocks.user,
+          post: Mocks.comment.comment
+        ),
+        Post.State(
+          size: .small,
+          currentUser: Mocks.user,
+          post: Mocks.comment1.comment
+        )
+      ]
     )) {
       Comments()
     }

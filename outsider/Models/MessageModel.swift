@@ -28,4 +28,5 @@ struct MessageModelPlain: Equatable, Codable, Identifiable {
   let text: String?
   let type: MediaType
   let url: URL?
+  let author: String
 }

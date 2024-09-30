@@ -124,7 +124,9 @@ struct Explore {
       case .path(.element(_, action: .profile(.presentComments(let post)))):
         state.path.append(
           .comments(Comments.State(
+            currentUser: state.currentUser,
             post: Post.State(
+              size: .normal,
               currentUser: state.currentUser,
               post: post
             )))

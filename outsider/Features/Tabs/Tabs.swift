@@ -8,6 +8,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Supabase
+import FirebaseMessaging
 
 @Reducer
 struct Tabs {
@@ -56,6 +57,9 @@ struct Tabs {
     case onSelectionChanged(Int?)
     case onTabSelectionChanged(TabSelection)
     case onInsertStory(Result<StoryModel, Error>)
+    case registerNotifications
+    case synchronizeToken(String)
+    case didSynchronizeToken(Result<[String], Error>)
     
     // Sub actions
     case camera(Camera.Action)
@@ -68,6 +72,35 @@ struct Tabs {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .synchronizeToken(let token):
+        if !state.currentUser.fcm_tokens.contains(token) {
+          state.currentUser.fcm_tokens.append(token)
+        }
+        return .run { [currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("users")
+              .update(["fcm_tokens": currentUser.fcm_tokens])
+              .eq("uuid", value: currentUser.uuid)
+              .execute()
+            
+            await send(.didSynchronizeToken(.success(currentUser.fcm_tokens)))
+          } catch {
+            await send(.didSynchronizeToken(.failure(error)))
+          }
+        }
+        
+      case .didSynchronizeToken(.success(let tokens)):
+        state.currentUser.fcm_tokens = tokens
+        if let encoded = try? JSONEncoder().encode(state.currentUser) {
+          UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
+        }
+        return .none
+        
+      case .didSynchronizeToken(.failure(let error)):
+        print(error)
+        return .none
+        
       case .subscribeStories:
         guard let following = state.currentUser.following else { return .none }
         return .run { [following = following, currentUser = state.currentUser] send in
@@ -158,6 +191,27 @@ struct Tabs {
           try await supabase.auth.signOut()
         }
         
+      case .registerNotifications:
+        return .run { send in
+          await withCheckedContinuation { continuation in
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(
+              options: authOptions,
+              completionHandler: { _, _ in
+                continuation.resume()
+              }
+            )
+          }
+          
+//          Messaging.messaging().token { token, error in
+//            if let error = error {
+//              print("Error fetching FCM registration token: \(error)")
+//            } else if let token = token {
+//              print("FCM registration token: \(token)")
+//            }
+//          }
+        }
+        
       case .initialize:
         return .merge(
           //          .run { send in
@@ -167,6 +221,10 @@ struct Tabs {
           //              await send(.handleBadSession)
           //            }
           //          },
+
+          .run { send in
+            await send(.registerNotifications)
+          },
           .run { send in
             await send(.currentProfile(.profile(.fetchProfile)))
           },
@@ -184,7 +242,11 @@ struct Tabs {
         return .none
         
       case .home(.send(.didSend(.success(let post)))):
-        state.currentProfile.profile.posts.insert(Post.State(currentUser: state.currentUser, post: post), at: 0)
+        state.currentProfile.profile.posts.insert(Post.State(
+          size: .normal,
+          currentUser: state.currentUser,
+          post: post
+        ), at: 0)
         return .none
         
       case .home(.send(.didSend(.failure(let error)))),

@@ -9,9 +9,11 @@ import SwiftUI
 import ComposableArchitecture
 
 @Reducer
-struct Main {  
+struct Main {
   @ObservableState
   struct State {
+    var token: String?
+    
     // Sub states
     var signIn: SignIn.State?
     var tabs: Tabs.State?
@@ -19,6 +21,7 @@ struct Main {
   
   enum Action {
     case initialize
+    case setToken(String)
     
     // Nested
     case signIn(SignIn.Action)
@@ -28,9 +31,17 @@ struct Main {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .setToken(let token):
+        state.token = token
+        state.tabs?.currentUser.fcm_tokens.append(token)
+        return .none
+        
       case .initialize:
         if let data = UserDefaults.standard.data(forKey: StorageKey.user.rawValue),
-           let decoded = try? JSONDecoder().decode(UserModel.self, from: data) {
+           var decoded = try? JSONDecoder().decode(UserModel.self, from: data) {
+          if let token = state.token, !decoded.fcm_tokens.contains(token) {
+            decoded.fcm_tokens.append(token)
+          }
           state.tabs = Tabs.State(
             currentUser: decoded,
             camera: Camera.State(
@@ -62,8 +73,12 @@ struct Main {
         }
         return .none
         
-      case .signIn(.didFetchUser(.success(let user))),
-          .signIn(.path(.element(_, action: .username(.didSignUp(.success(let user)))))):
+      case .signIn(.didFetchUser(.success(let u))),
+          .signIn(.path(.element(_, action: .username(.didSignUp(.success(let u)))))):
+        var user = u
+        if let token = state.token, !user.fcm_tokens.contains(token) {
+          user.fcm_tokens.append(token)
+        }
         state.tabs = Tabs.State(
           currentUser: user,
           camera: Camera.State(
@@ -91,7 +106,10 @@ struct Main {
           )
         )
         state.signIn = nil
-        return .none
+        return .run { [token = state.token] send in
+          guard let token = token else { return }
+          await send(.tabs(.synchronizeToken(token)))
+        }
         
       case .signIn(_):
         return .none

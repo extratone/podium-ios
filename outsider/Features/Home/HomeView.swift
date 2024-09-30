@@ -41,6 +41,7 @@ struct HomeView: View {
                     }
                   )
                   .padding(.horizontal, 10)
+                  
                   Divider()
                     .padding(.bottom, 10)
                 }

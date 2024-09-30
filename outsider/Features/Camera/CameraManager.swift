@@ -329,6 +329,12 @@ class CameraManager: NSObject {
     success = true
   }
   
+  public func requestAuthorization() async -> Bool {
+    let result = await AVCaptureDevice.requestAccess(for: .video)
+    let audio = await AVAudioApplication.requestRecordPermission()
+    return result && audio
+  }
+  
   public func checkAuthorization() async -> Bool {
     if AVAudioApplication.shared.recordPermission != .granted {
       return false

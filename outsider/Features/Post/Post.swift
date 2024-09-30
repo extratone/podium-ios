@@ -15,6 +15,7 @@ struct Post {
   @ObservableState
   struct State: Equatable, Identifiable {
     var id: UUID { post.uuid }
+    var size: Size
     let currentUser: UserModel
     var post: PostModel
     var isPending = false
@@ -41,6 +42,11 @@ struct Post {
     
     // Sub actions
     case media(PresentationAction<Media.Action>)
+  }
+  
+  enum Size {
+    case small
+    case normal
   }
   
   var body: some Reducer<State, Action> {

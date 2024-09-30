@@ -28,7 +28,7 @@ extension AVAsset {
     let renderWidth = renderHeight * 9 / 16
     cropScaleComposition.renderSize = CGSize(width: renderWidth, height: renderHeight)
     exportSession?.videoComposition = cropScaleComposition
-    let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + "_compressed.mp4")
+    let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + "_compressed.mp4")
     exportSession?.outputURL = compressedURL
     exportSession?.outputFileType = .mp4
     exportSession?.shouldOptimizeForNetworkUse = true

@@ -171,6 +171,7 @@ struct Profile {
                   username,
                   display_name,
                   avatar_url,
+                  fcm_tokens,
                   following:users_following!users_following_user_uuid_fkey(
                     following:users!users_following_following_user_uuid_fkey(*)
                   )
@@ -189,12 +190,14 @@ struct Profile {
                   uuid,
                   text,
                   created_at,
+                  is_comment,
                   author!inner(*),
                   media(*),
                   likes(*)
                 """
               )
               .eq("author.uuid", value: user.uuid)
+              .eq("is_comment", value: false)
               .order("created_at", ascending: false)
               .limit(20)
               .execute()
@@ -211,7 +214,11 @@ struct Profile {
         state.posts.removeAll()
         var temp: IdentifiedArrayOf<Post.State> = []
         for post in posts {
-          temp.append(Post.State(currentUser: state.currentUser, post: post))
+          temp.append(Post.State(
+            size: .normal,
+            currentUser: state.currentUser,
+            post: post
+          ))
         }
         state.posts = temp
         return .none

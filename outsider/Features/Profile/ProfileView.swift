@@ -184,6 +184,7 @@ struct ProfileView: View {
       currentUser: Mocks.user,
       user: Mocks.user,
       posts: [Post.State(
+        size: .normal,
         currentUser: Mocks.user,
         post: Mocks.post
       )]

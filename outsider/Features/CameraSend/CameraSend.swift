@@ -70,17 +70,18 @@ struct CameraSend {
         return .run { send in
           do {
             let mediaUuid = UUID()
+            let mediaUuidString = mediaUuid.uuidString
             try await supabase.storage
               .from("media")
               .upload(
-                path: "\(mediaUuid)/\(mediaUuid).\(fileExtension)",
+                path: "\(mediaUuidString)/\(mediaUuidString).\(fileExtension)",
                 file: mediaData,
                 options: FileOptions(upsert: true)
               )
             
             let publicURL = try supabase.storage
               .from("media")
-              .getPublicURL(path: "\(mediaUuid)/\(mediaUuid).\(fileExtension)")
+              .getPublicURL(path: "\(mediaUuidString)/\(mediaUuidString).\(fileExtension)")
             
             await send(.didUploadMedia(.success((mediaUuid, publicURL, mediaType))))
           } catch {
@@ -222,7 +223,8 @@ struct CameraSend {
                 chat_uuid: chatUuid,
                 text: nil,
                 type: mediaType,
-                url: mediaUrl
+                url: mediaUrl,
+                author: currentUser.display_name ?? currentUser.username
               ))
               .execute()
             
@@ -309,7 +311,7 @@ struct CameraSend {
                       print(error)
                     }
                   }
-
+                  
                   return (UUID(), true)
                 }
               }

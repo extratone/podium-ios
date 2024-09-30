@@ -29,7 +29,7 @@ struct MessagesView: View {
           ForEach(store
             .scope(state: \.chats, action: \.chats)
             .sorted(by: { prev, next in
-              return prev.chat.messages?.last?.created_at ?? .now > next.chat.messages?.last?.created_at ?? .now
+              return prev.chat.messages?.first?.created_at ?? .now > next.chat.messages?.first?.created_at ?? .now
             })
           ) { chatStore in
             Button {

@@ -15,10 +15,14 @@ struct PostModel: Codable, Equatable, Identifiable {
   let author: UserModel
   let media: [MediaModel]?
   var likes: [LikeModel]?
+  var comments: [CommentModel]?
+  var commentsPlain: [PostCommentModelInsert]?
+  let is_comment: Bool
 }
 
 struct PostModelInsert: Codable {
   let uuid: UUID
   let text: String?
   let author: UUID
+  let is_comment: Bool
 }

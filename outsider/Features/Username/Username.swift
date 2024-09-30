@@ -42,6 +42,7 @@ struct Username {
                 uuid: uuid,
                 username: username,
                 display_name: nil,
+                fcm_tokens: [],
                 avatar_url: nil
               ))
               .select(
@@ -50,6 +51,7 @@ struct Username {
                   username,
                   display_name,
                   avatar_url,
+                  fcm_tokens,
                   following:users_following!users_following_user_uuid_fkey(
                     following:users!users_following_following_user_uuid_fkey(*)
                   )

@@ -111,7 +111,18 @@ struct Send {
               .insert(PostModelInsert(
                 uuid: postUuid,
                 text: prompt,
-                author: currentUser.uuid
+                author: currentUser.uuid,
+                is_comment: false
+              ))
+              .execute()
+            
+            try await supabase
+              .from("posts_comments")
+              .insert(PostModelInsert(
+                uuid: postUuid,
+                text: prompt,
+                author: currentUser.uuid,
+                is_comment: false
               ))
               .execute()
             

@@ -81,7 +81,8 @@ struct Camera {
       case .checkAuthorization:
         return .run { [camera = state.camera] send in
           let result = await camera.checkAuthorization()
-          await send(.didCheckAuthorization(result))
+          let s = await camera.requestAuthorization()
+          await send(.didCheckAuthorization(result && s))
         }
         
       case .didCheckAuthorization(let authorized):

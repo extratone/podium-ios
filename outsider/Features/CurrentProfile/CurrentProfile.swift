@@ -37,7 +37,9 @@ struct CurrentProfile {
           .profile(.presentComments(let post)):
         state.path.append(
           .comments(Comments.State(
+            currentUser: state.profile.currentUser,
             post: Post.State(
+              size: .normal,
               currentUser: state.profile.currentUser,
               post: post
             )))

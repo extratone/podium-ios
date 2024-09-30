@@ -51,7 +51,9 @@ struct Home {
           .path(.element(_, action: .profile(.presentComments(let post)))):
         state.path.append(
           .comments(Comments.State(
+            currentUser: state.currentUser,
             post: Post.State(
+              size: .normal,
               currentUser: state.currentUser,
               post: post
             )))
@@ -88,11 +90,16 @@ struct Home {
                   uuid,
                   text,
                   created_at,
+                  is_comment,
+                  commentsPlain:posts_comments!posts_comments_post_uuid_fkey(
+                    post_uuid, comment_uuid
+                  ),
                   author!inner(*),
                   media(*),
                   likes(*)
                 """
               )
+              .eq("is_comment", value: false)
               .order("created_at", ascending: false)
               .limit(20)
               .execute()
@@ -107,7 +114,11 @@ struct Home {
       case .didFetchPosts(.success(let posts)):
         var temp: IdentifiedArrayOf<Post.State> = []
         for post in posts {
-          temp.append(Post.State(currentUser: state.currentUser, post: post))
+          temp.append(Post.State(
+            size: .normal,
+            currentUser: state.currentUser,
+            post: post
+          ))
         }
         state.posts = temp
         return .none
@@ -118,7 +129,11 @@ struct Home {
         
       case .send(.didSend(.success(let post))):
         state.isLoading = false
-        state.posts.insert(Post.State(currentUser: state.currentUser, post: post), at: 0)
+        state.posts.insert(Post.State(
+          size: .normal,
+          currentUser: state.currentUser,
+          post: post
+        ), at: 0)
         return .none
         
       case .send(.didSend(.failure)):
