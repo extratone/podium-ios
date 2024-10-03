@@ -10,6 +10,7 @@ import Foundation
 struct CommentModel: Codable, Equatable, Identifiable {
   var id: UUID { comment.uuid }
   let comment: PostModel
+  let created_at: Date
 }
 
 struct PostCommentModelInsert: Codable, Equatable {

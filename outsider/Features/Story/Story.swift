@@ -16,7 +16,7 @@ struct Story {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var stories: Dictionary<UUID, IdentifiedArrayOf<StoryModel>>
     var selectedUser: UserModel
     var selectedStory: StoryModel?
@@ -58,7 +58,6 @@ struct Story {
     Reduce { state, action in
       switch action {
       case .fetchProfileStats:
-//        state.selectedStats = []
         state.stats?.stats = []
         if state.currentUser.uuid != state.selectedUser.uuid {
           return .none
@@ -191,7 +190,7 @@ struct Story {
         return .none
         
       case .initialize:
-        state.selectedStory = state.stories[state.selectedUser.uuid]?.first(where: { !($0.stats?.contains(where: { $0.viewed_by.uuid == state.currentUser.uuid }) ?? false) }) ?? state.stories[state.selectedUser.uuid]?.first
+        state.selectedStory = state.stories[state.selectedUser.uuid]?.first(where: { !($0.stats.contains(where: { $0.viewed_by.uuid == state.currentUser.uuid })) }) ?? state.stories[state.selectedUser.uuid]?.first
         return .merge(
           .run { send in
             await send(.downloadImage)
@@ -240,7 +239,7 @@ struct Story {
         return .run { [selectedStory = state.selectedStory, currentUser = state.currentUser] send in
           do {
             guard let selectedStory = selectedStory else { return }
-            if !(selectedStory.stats?.contains(where: { $0.viewed_by.uuid == currentUser.uuid }) ?? false) {
+            if !selectedStory.stats.contains(where: { $0.viewed_by.uuid == currentUser.uuid }) {
               let statInsert = StoryStatsModelInsert(
                 uuid: UUID(),
                 viewed_by: currentUser.uuid,
@@ -249,7 +248,7 @@ struct Story {
               )
               let stat = StoryStatsModel(
                 uuid: statInsert.uuid,
-                viewed_by: currentUser,
+                viewed_by: currentUser.base,
                 story_uuid: statInsert.story_uuid,
                 author_uuid: statInsert.author_uuid
               )
@@ -269,7 +268,7 @@ struct Story {
       case .didMarkAsViewed(.success((let stat, let story))):
         if var tempStories = state.stories[story.author.uuid],
            var tempData = tempStories[id: story.uuid] {
-          tempData.stats?.append(stat)
+          tempData.stats.append(stat)
           tempStories[id: story.uuid] = tempData
           state.stories[story.author.uuid] = tempStories
         }

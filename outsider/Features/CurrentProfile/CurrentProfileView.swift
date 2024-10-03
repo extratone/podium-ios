@@ -24,7 +24,9 @@ struct CurrentProfileView: View {
       ProfileView(store: store.scope(state: \.profile, action: \.profile))
         .toolbar {
           ToolbarItem(placement: .topBarTrailing) {
-            NavigationLink(state: CurrentProfile.Path.State.settings(Settings.State())) {
+            NavigationLink(state: CurrentProfile.Path.State.settings(Settings.State(
+              currentUserUuid: store.profile.currentUser.uuid
+            ))) {
               Image("icon-settings")
                 .foregroundColor(.colorTextPrimary)
             }
@@ -48,8 +50,9 @@ struct CurrentProfileView: View {
 #Preview {
   CurrentProfileView(
     store: Store(initialState: CurrentProfile.State(
+      currentUser: Mocks.currentUser,
       profile: Profile.State(
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         user: Mocks.user
       )
     )) {

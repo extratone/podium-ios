@@ -46,8 +46,15 @@ struct SignUpView: View {
         Text(error)
           .foregroundStyle(.red)
       }
+      
+      HStack {
+        Text("By signing up you agree to [EULA](https://jach.me/eula.html).")
+      }
     }
     .padding()
+    .onAppear {
+      store.send(.reset)
+    }
   }
 }
 

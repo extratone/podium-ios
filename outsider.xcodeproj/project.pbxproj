@@ -94,6 +94,7 @@
 		82EF35AA2C923B6600DEF606 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EF35A92C923B6600DEF606 /* View+Extensions.swift */; };
 		82EF35AD2C9302FB00DEF606 /* Username.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EF35AC2C9302FB00DEF606 /* Username.swift */; };
 		82EF35AF2C93031200DEF606 /* UsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EF35AE2C93031200DEF606 /* UsernameView.swift */; };
+		82F528252CAD5623003E74BD /* PostMutedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F528242CAD561E003E74BD /* PostMutedModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -179,6 +180,7 @@
 		82EF35A92C923B6600DEF606 /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 		82EF35AC2C9302FB00DEF606 /* Username.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Username.swift; sourceTree = "<group>"; };
 		82EF35AE2C93031200DEF606 /* UsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameView.swift; sourceTree = "<group>"; };
+		82F528242CAD561E003E74BD /* PostMutedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMutedModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -474,6 +476,7 @@
 		82B946002C8F5E3900933459 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				82F528242CAD561E003E74BD /* PostMutedModel.swift */,
 				82E3D89B2CA87B0F0093BFB1 /* CommentModel.swift */,
 				82A97C872CA4552F00D788B2 /* MessageStatsModel.swift */,
 				82A97C852CA2E19500D788B2 /* FollowingModel.swift */,
@@ -634,6 +637,7 @@
 			files = (
 				820142782CA2ACF900D5DED9 /* NewMessage.swift in Sources */,
 				820142792CA2ACF900D5DED9 /* NewMessageView.swift in Sources */,
+				82F528252CAD5623003E74BD /* PostMutedModel.swift in Sources */,
 				82DE373F2C8F7F20001C842B /* CurrentProfile.swift in Sources */,
 				820EF4732C9ADCC400263915 /* StoryStatsModel.swift in Sources */,
 				82DE374D2C919285001C842B /* PostModel.swift in Sources */,
@@ -839,7 +843,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "color-primary";
 				CODE_SIGN_ENTITLEMENTS = outsider/outsider.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_ASSET_PATHS = "\"outsider/Preview Content\"";
 				DEVELOPMENT_TEAM = A6GVRYGG7C;
 				ENABLE_PREVIEWS = YES;
@@ -847,8 +851,8 @@
 				INFOPLIST_FILE = outsider/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Podium;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Taking photos and videos";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio for videos";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Taking photos and videos to share";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Recording audio for videos to share";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -880,7 +884,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "color-primary";
 				CODE_SIGN_ENTITLEMENTS = outsider/outsider.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_ASSET_PATHS = "\"outsider/Preview Content\"";
 				DEVELOPMENT_TEAM = A6GVRYGG7C;
 				ENABLE_PREVIEWS = YES;
@@ -888,8 +892,8 @@
 				INFOPLIST_FILE = outsider/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Podium;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Taking photos and videos";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio for videos";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Taking photos and videos to share";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Recording audio for videos to share";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

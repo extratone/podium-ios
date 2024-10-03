@@ -138,7 +138,7 @@ struct StoryView: View {
                   .frame(width: 20, height: 20)
                   .foregroundStyle(.white)
                 
-                Text("\(store.selectedStory?.stats?.count ?? 0) views")
+                Text("\(store.selectedStory?.stats.count ?? 0) views")
                   .foregroundStyle(.white)
                   .fontWeight(.medium)
                   .font(.subheadline)
@@ -166,7 +166,7 @@ struct StoryView: View {
 #Preview {
   StoryView(
     store: Store(initialState: Story.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       stories: [Mocks.user.uuid: [Mocks.story]],
       selectedUser: Mocks.user
     )) {

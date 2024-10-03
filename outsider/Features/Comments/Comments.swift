@@ -15,7 +15,7 @@ struct Comments {
   
   @ObservableState
   struct State: Equatable {
-    let currentUser: UserModel
+    let currentUser: CurrentUserModel
     var text = ""
     var tempImage: UIImage?
     
@@ -105,7 +105,11 @@ struct Comments {
                   created_at,
                   is_comment,
                   author!inner(*),
-                  media(*)
+                  media(*),
+                  likes(*),
+                  commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                    count
+                  )
                 """
               )
               .eq("uuid", value: commentUuid)
@@ -136,7 +140,7 @@ struct Comments {
         return .none
         
       case .fetchComments:
-        return .run { [post = state.post] send in
+        return .run { [currentUser = state.currentUser, post = state.post] send in
           do {
             let post: PostModel = try await supabase
               .from("posts")
@@ -147,7 +151,19 @@ struct Comments {
                   created_at,
                   is_comment,
                   comments:posts_comments!posts_comments_post_uuid_fkey(
-                    comment:posts!posts_comments_comment_uuid_fkey(*, author:users(*))
+                    created_at,
+                    comment:posts!posts_comments_comment_uuid_fkey(
+                      *,
+                      author:users!posts_author_fkey1(*),
+                      likes(*),
+                      media(*),
+                      commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                        count
+                      )
+                    )
+                  ),
+                  commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                    count
                   ),
                   author!inner(*),
                   media(*),
@@ -155,11 +171,14 @@ struct Comments {
                 """
               )
               .eq("uuid", value: post.post.uuid)
+              .not("comments.comment.uuid", operator: .in, value: "(\(currentUser.mutedPosts.map({ $0.post_uuid.uuidString }).joined(separator: ",")))")
+              .order("created_at", ascending: true, nullsFirst: false, referencedTable: "comments.comment")
+              .limit(5, referencedTable: "comments.comment")
               .single()
               .execute()
               .value
             
-            await send(.didFetchComments(.success(post.comments?.reversed() ?? [])))
+            await send(.didFetchComments(.success(post.comments ?? [])))
           } catch {
             await send(.didFetchComments(.failure(error)))
           }
@@ -182,6 +201,18 @@ struct Comments {
         return .none
         
       case .presentProfile(_):
+        return .none
+        
+      case .posts(.element(_, action: .didDelete(.success(let uuid)))):
+        state.posts.removeAll(where: { $0.post.uuid == uuid })
+        return .none
+        
+      case .post(.didLike(.success(let like))):
+//        state.post.post.likes.append(like)
+        return .none
+        
+      case .post(.didUnlike(let post)):
+        state.post.post.likes.removeAll(where: { $0.post_uuid == post.uuid })
         return .none
         
       case .post:

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ComposableArchitecture
 
 struct PostModel: Codable, Equatable, Identifiable {
   var id: UUID { uuid }
@@ -13,10 +14,10 @@ struct PostModel: Codable, Equatable, Identifiable {
   let created_at: Date
   let text: String?
   let author: UserModel
-  let media: [MediaModel]?
-  var likes: [LikeModel]?
+  let media: [MediaModel]
+  var likes: IdentifiedArrayOf<LikeModel> = []
   var comments: [CommentModel]?
-  var commentsPlain: [PostCommentModelInsert]?
+  let commentsCount: [CommentsCount]
   let is_comment: Bool
 }
 
@@ -25,4 +26,8 @@ struct PostModelInsert: Codable {
   let text: String?
   let author: UUID
   let is_comment: Bool
+}
+
+struct CommentsCount: Codable, Equatable {
+  let count: Int
 }

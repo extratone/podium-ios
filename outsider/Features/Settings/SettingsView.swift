@@ -20,13 +20,22 @@ struct SettingsView: View {
           Text("Log out")
             .foregroundStyle(.red)
         }
+        
+        Button {
+          store.send(.deleteAccount)
+        } label: {
+          Text("Delete account")
+            .foregroundStyle(.red)
+        }
       } header: {
         Text("Profile")
       }
       
       Section {
-        NavigationLink("Privacy policy", destination: Text("Privacy"))
-        NavigationLink("Terms of service", destination: Text("Terms of service"))
+        Text("[Privacy policy](https://jach.me/privacy.html)")
+          .accentColor(.colorTextPrimary)
+        Text("[End-user license agreement](https://jach.me/eula.html)")
+          .accentColor(.colorTextPrimary)
       } header: {
         Text("Podium")
       } footer: {
@@ -43,7 +52,9 @@ struct SettingsView: View {
 #Preview {
   NavigationStack {
     SettingsView(
-      store: Store(initialState: Settings.State()) {
+      store: Store(initialState: Settings.State(
+        currentUserUuid: Mocks.user.uuid
+      )) {
         Settings()
       }
     )

@@ -19,6 +19,8 @@ struct CurrentProfile {
   
   @ObservableState
   struct State: Equatable {
+    var currentUser: CurrentUserModel
+    
     // Sub states
     var path = StackState<Path.State>()
     var profile: Profile.State
@@ -56,13 +58,6 @@ struct CurrentProfile {
         return .none
         
       case .path:
-        return .none
-        
-      case .profile(.didFetchProfile(.success((let user, _)))):
-        state.profile.currentUser = user
-        if let encoded = try? JSONEncoder().encode(user) {
-          UserDefaults.standard.set(encoded, forKey: StorageKey.user.rawValue)
-        }
         return .none
         
       case .profile:

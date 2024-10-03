@@ -21,7 +21,7 @@ struct Home {
   @ObservableState
   struct State: Equatable {
     var isLoading = false
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var posts: IdentifiedArrayOf<Post.State> = []
     
     // Sub states
@@ -77,11 +77,23 @@ struct Home {
         state.posts.removeAll(where: { $0.post.uuid == uuid })
         return .none
         
+      case .posts(.element(id: _, action: .didMute(.success(let uuid)))):
+        state.posts.removeAll(where: { $0.post.uuid == uuid })
+        return .none
+        
+      case .path(.element(_, action: .comments(.post(.didLike(.success(let like)))))):
+        state.posts[id: like.post_uuid]?.post.likes.append(like)
+        return .none
+        
+      case .path(.element(_, action: .comments(.post(.didUnlike(let post))))):
+        state.posts[id: post.uuid]?.post.likes.removeAll(where: { $0.post_uuid == post.uuid })
+        return .none
+        
       case .posts:
         return .none
         
       case .fetchPosts:
-        return .run { send in
+        return .run { [currentUser = state.currentUser] send in
           do {
             let posts: [PostModel] = try await supabase
               .from("posts")
@@ -91,8 +103,8 @@ struct Home {
                   text,
                   created_at,
                   is_comment,
-                  commentsPlain:posts_comments!posts_comments_post_uuid_fkey(
-                    post_uuid, comment_uuid
+                  commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                    count
                   ),
                   author!inner(*),
                   media(*),
@@ -100,6 +112,7 @@ struct Home {
                 """
               )
               .eq("is_comment", value: false)
+              .not("uuid", operator: .in, value: "(\(currentUser.mutedPosts.map({ $0.post_uuid.uuidString }).joined(separator: ",")))")
               .order("created_at", ascending: false)
               .limit(20)
               .execute()

@@ -14,7 +14,7 @@ struct Stories {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var stories: Dictionary<UUID, IdentifiedArrayOf<StoryModel>> = [:]
     
     // Sub states
@@ -54,8 +54,8 @@ struct Stories {
         
       case .fetchStories:
         return .run { [currentUser = state.currentUser] send in
-          var following = currentUser.following ?? []
-          following.append(FollowingModel(following: currentUser))
+          var following = currentUser.following
+          following.append(FollowingModel(following: currentUser.base))
           
           let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
           
@@ -98,7 +98,7 @@ struct Stories {
       case .story(.presented(.didMarkAsViewed(.success((let stat, let story))))):
         if var tempStories = state.stories[story.author.uuid],
            var tempData = tempStories[id: story.uuid] {
-          tempData.stats?.append(stat)
+          tempData.stats.append(stat)
           tempStories[id: story.uuid] = tempData
           state.stories[story.author.uuid] = tempStories
         }

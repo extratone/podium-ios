@@ -21,6 +21,7 @@ struct SignUp {
   }
   
   enum Action {
+    case reset
     case signUp
     case didSignUp(Result<UUID, Error>)
     case onEmailChanged(email: String)
@@ -30,6 +31,12 @@ struct SignUp {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .reset:
+        state.isLoading = false
+        state.email = ""
+        state.password = ""
+        return .none
+        
       case .signUp:
         state.isLoading = true
         state.error = nil

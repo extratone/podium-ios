@@ -84,12 +84,12 @@ struct HomeView: View {
   TabView {
     HomeView(
       store: Store(initialState: Home.State(
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         send: Send.State(
-          currentUser: Mocks.user
+          currentUser: Mocks.currentUser
         ),
         stories: Stories.State(
-          currentUser: Mocks.user
+          currentUser: Mocks.currentUser
         )
       )) {
         Home()

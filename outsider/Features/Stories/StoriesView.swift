@@ -16,7 +16,7 @@ struct StoriesView: View {
       HStack {
         Button {
           if store.stories[store.currentUser.uuid]?.first != nil {
-            store.send(.presentSheet(store.currentUser))
+            store.send(.presentSheet(store.currentUser.base))
           } else {
             store.send(.presentCamera)
           }
@@ -70,7 +70,7 @@ struct StoriesView: View {
             store.send(.presentSheet(stories.first?.author))
           } label: {
             ZStack {
-              if stories.contains(where: { !($0.stats?.contains(where: { $0.viewed_by.uuid == store.currentUser.uuid }) ?? true) }) {
+              if stories.contains(where: { !($0.stats.contains(where: { $0.viewed_by.uuid == store.currentUser.uuid })) }) {
                 Circle()
                   .strokeBorder(.colorPrimary, lineWidth: 2)
                   .frame(width: 56, height: 56)
@@ -110,7 +110,7 @@ struct StoriesView: View {
 #Preview {
   StoriesView(
     store: Store(initialState: Stories.State(
-      currentUser: Mocks.user
+      currentUser: Mocks.currentUser
     )) {
       Stories()
     }

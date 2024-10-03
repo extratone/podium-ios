@@ -152,7 +152,7 @@ struct ExploreView: View {
 #Preview {
   ExploreView(
     store: Store(initialState: Explore.State(
-      currentUser: Mocks.user
+      currentUser: Mocks.currentUser
     )) {
       Explore()
     }

@@ -16,15 +16,11 @@ struct Post {
   struct State: Equatable, Identifiable {
     var id: UUID { post.uuid }
     var size: Size
-    let currentUser: UserModel
+    let currentUser: CurrentUserModel
     var post: PostModel
     var isPending = false
     var isLiked: Bool {
-      if let likes = post.likes {
-        return likes.contains(where: { $0.liked_by == currentUser.uuid })
-      } else {
-        return false
-      }
+      return post.likes.contains(where: { $0.liked_by == currentUser.uuid })
     }
     
     // Sub states
@@ -39,6 +35,10 @@ struct Post {
     case didLike(Result<LikeModel, Error>)
     case unlike
     case didUnlike(PostModel)
+    case mute
+    case didMute(Result<UUID, Error>)
+    case report
+    case didReport(Result<UUID, Error>)
     
     // Sub actions
     case media(PresentationAction<Media.Action>)
@@ -52,6 +52,54 @@ struct Post {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .report:
+        return .run { [post = state.post, currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("posts_reports")
+              .insert(PostMutedModel(
+                post_uuid: post.uuid,
+                user_uuid: currentUser.uuid
+              ))
+              .execute()
+            
+            await send(.didReport(.success(post.uuid)))
+          } catch {
+            await send(.didReport(.failure(error)))
+          }
+        }
+        
+      case .didReport(.success(let postUuid)):
+        return .none
+        
+      case .didReport(.failure(let error)):
+        print(error)
+        return .none
+        
+      case .mute:
+        return .run { [post = state.post, currentUser = state.currentUser] send in
+          do {
+            try await supabase
+              .from("posts_muted")
+              .insert(PostMutedModel(
+                post_uuid: post.uuid,
+                user_uuid: currentUser.uuid
+              ))
+              .execute()
+            
+            await send(.didMute(.success(post.uuid)))
+          } catch {
+            await send(.didMute(.failure(error)))
+          }
+        }
+        
+      case .didMute(.success(let postUuid)):
+        return .none
+        
+      case .didMute(.failure(let error)):
+        print(error)
+        return .none
+        
       case .presentMedia(let media):
         state.media = Media.State(media: media)
         return .none
@@ -77,7 +125,8 @@ struct Post {
           }
         )
         
-      case .didLike(.success(_)):
+      case .didLike(.success(let like)):
+        state.post.likes.append(like)
         return .none
         
       case .didLike(.failure(let error)):
@@ -102,7 +151,8 @@ struct Post {
           }
         )
         
-      case .didUnlike(_):
+      case .didUnlike(let post):
+        state.post.likes.removeAll(where: { $0.post_uuid == post.uuid })
         return .none
         
       case .delete:
@@ -113,6 +163,12 @@ struct Post {
               .from("posts_media")
               .delete()
               .eq("post_uuid", value: post.uuid)
+              .execute()
+            
+            try await supabase
+              .from("posts_comments")
+              .delete()
+              .eq("comment_uuid", value: post.uuid)
               .execute()
             
             try await supabase

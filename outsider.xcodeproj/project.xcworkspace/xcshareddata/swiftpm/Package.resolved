@@ -1,5 +1,5 @@
 {
-  "originHash" : "2ac7568e3b304c6ae3ca0dd08297cabc2489bf6586cb188272e845faffc07c8f",
+  "originHash" : "3f1188184fd7cf685d6c52584ec23ab67d17fab965eb80811e500a9012b9273c",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
-        "revision" : "1fc52ab0e172e7c5a961f975a76c2611f4f22852",
-        "version" : "11.2.0"
+        "revision" : "f909f901bfba9e27e4e9da83242a4915d6dd64bb",
+        "version" : "11.3.0"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "07a2f57d147d2bf368a0d2dcb5579ff082d9e44f",
-        "version" : "11.1.0"
+        "revision" : "93406fd21b85e66e2d6dbf50b472161fd75c3f1f",
+        "version" : "11.3.0"
       }
     },
     {
@@ -101,6 +101,15 @@
       }
     },
     {
+      "identity" : "multipartformdata",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/grdsdev/MultipartFormData",
+      "state" : {
+        "revision" : "ed7abea9cfc6c3b5e77a73fe6842c57a372d2017",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
@@ -123,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/supabase/supabase-swift.git",
       "state" : {
-        "revision" : "b0059a3f30a6a3a7d3b96f786542234a5d1a7835",
-        "version" : "2.18.0"
+        "revision" : "b159fb95a300cb2e85a193688748e2a10b612dea",
+        "version" : "2.20.0"
       }
     },
     {
@@ -150,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "9bf03ff58ce34478e66aaee630e491823326fd06",
-        "version" : "1.1.3"
+        "revision" : "671108c96644956dddcd89dd59c203dcdb36cec7",
+        "version" : "1.1.4"
       }
     },
     {
@@ -159,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture/",
       "state" : {
-        "revision" : "0d8980f5bcc5fe6941f1788758667ff2b8c10f03",
-        "version" : "1.14.0"
+        "revision" : "8013f1a72af8ccb2b1735d7aed831a8dc07c6fd0",
+        "version" : "1.15.0"
       }
     },
     {
@@ -168,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
       "state" : {
-        "revision" : "bb5059bde9022d69ac516803f4f227d8ac967f71",
-        "version" : "1.1.0"
+        "revision" : "6054df64b55186f08b6d0fd87152081b8ad8d613",
+        "version" : "1.2.0"
       }
     },
     {
@@ -177,8 +186,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "9f95b4d033a4edd3814b48608db3f2ca90c7218b",
-        "version" : "3.7.0"
+        "revision" : "81bee98e706aee68d39ed5996db069ef2b313d62",
+        "version" : "3.7.1"
       }
     },
     {
@@ -195,8 +204,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "3ef38bb702a1a2f39c7e19fc0578403b8ee52b17",
-        "version" : "1.3.9"
+        "revision" : "0fc0255e780bf742abeef29dec80924f5f0ae7b9",
+        "version" : "1.4.1"
       }
     },
     {
@@ -213,8 +222,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-navigation",
       "state" : {
-        "revision" : "e834b3760731160d7d448509ee6a1408c8582a6b",
-        "version" : "2.2.0"
+        "revision" : "d1bdbd8a5d1d1dfd2e4bb1f5e2f6facb631404d4",
+        "version" : "2.2.1"
       }
     },
     {
@@ -240,8 +249,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "515f79b522918f83483068d99c68daeb5116342d",
-        "version" : "600.0.0-prerelease-2024-09-04"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     },
     {
@@ -249,8 +258,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "96beb108a57f24c8476ae1f309239270772b2940",
-        "version" : "1.2.5"
+        "revision" : "27d767d643fa2cf083d0a73d74fa84cacb53e85c",
+        "version" : "1.4.1"
       }
     }
   ],

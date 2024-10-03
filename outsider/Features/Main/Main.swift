@@ -38,7 +38,7 @@ struct Main {
         
       case .initialize:
         if let data = UserDefaults.standard.data(forKey: StorageKey.user.rawValue),
-           var decoded = try? JSONDecoder().decode(UserModel.self, from: data) {
+           var decoded = try? JSONDecoder().decode(CurrentUserModel.self, from: data) {
           if let token = state.token, !decoded.fcm_tokens.contains(token) {
             decoded.fcm_tokens.append(token)
           }
@@ -62,9 +62,10 @@ struct Main {
               currentUser: decoded
             ),
             currentProfile: CurrentProfile.State(
+              currentUser: decoded,
               profile: Profile.State(
                 currentUser: decoded,
-                user: decoded
+                user: decoded.base
               )
             )
           )
@@ -99,9 +100,10 @@ struct Main {
             currentUser: user
           ),
           currentProfile: CurrentProfile.State(
+            currentUser: user,
             profile: Profile.State(
               currentUser: user,
-              user: user
+              user: user.base
             )
           )
         )

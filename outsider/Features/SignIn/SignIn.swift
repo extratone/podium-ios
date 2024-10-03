@@ -31,10 +31,11 @@ struct SignIn {
   }
   
   enum Action {
+    case reset
     case signIn
     case didSignIn(Result<UUID, Error>)
     case fetchUser(UUID)
-    case didFetchUser(Result<UserModel, Error>)
+    case didFetchUser(Result<CurrentUserModel, Error>)
     case onEmailChanged(email: String)
     case onPasswordChanged(password: String)
     case presentUsername(UUID)
@@ -46,6 +47,12 @@ struct SignIn {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .reset:
+        state.isLoading = false
+        state.email = ""
+        state.password = ""
+        return .none
+        
       case .signIn:
         state.isLoading = true
         state.error = nil
@@ -75,7 +82,7 @@ struct SignIn {
       case .fetchUser(let uuid):
         return .run { send in
           do {
-            let user: UserModel = try await supabase
+            let user: CurrentUserModel = try await supabase
               .from("users")
               .select(
                 """
@@ -84,8 +91,9 @@ struct SignIn {
                   display_name,
                   avatar_url,
                   fcm_tokens,
+                  mutedPosts:posts_muted(*),
                   following:users_following!users_following_user_uuid_fkey(
-                    following:users!users_following_following_user_uuid_fkey(*)
+                    following:users!users_following_following_user_uuid_fkey(*, mutedPosts:posts_muted(*))
                   )
                 """
               )

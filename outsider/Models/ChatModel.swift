@@ -11,7 +11,7 @@ struct ChatModel: Equatable, Codable, Identifiable {
   var id: UUID { uuid }
   let uuid: UUID
   let users: [UserModel]
-  var messages: [MessageModel]?
+  var messages: [MessageModel]
   let discovery_string: String
   let members: [UUID]
 }

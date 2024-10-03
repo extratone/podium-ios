@@ -16,7 +16,7 @@ struct Chat {
   @ObservableState
   struct State: Equatable, Identifiable {
     var id: UUID { chat.uuid }
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var chat: ChatModel
     var message = ""
     var title: String {
@@ -27,9 +27,9 @@ struct Chat {
         .joined(separator: ", ")
     }
     var unreadCount: Int {
-      chat.messages?.count(where: { message in
+      chat.messages.count(where: { message in
         !message.readBy.contains(where: { $0.read_by == currentUser.uuid })
-      }) ?? 0
+      })
     }
     
     // Sub states
@@ -58,7 +58,7 @@ struct Chat {
       case .initialize:
         return .run { send in
           await send(.markAsRead)
-//          await send(.fetchMessages)
+          //          await send(.fetchMessages)
         }
         
       case .presentMedia(let message):
@@ -74,7 +74,7 @@ struct Chat {
       case .markAsRead:
         return .run { [chat = state.chat, currentUser = state.currentUser, messages = state.chat.messages] send in
           do {
-            if let stats = messages?
+            let stats = messages
               .filter({ !$0.readBy.contains(where: { $0.uuid == currentUser.uuid }) })
               .map({ message in
                 MessageStatsModelInsert(
@@ -83,15 +83,13 @@ struct Chat {
                   read_by: currentUser.uuid,
                   chat_uuid: chat.uuid
                 )
-              }) {
-              
-              try await supabase
-                .from("messages_stats")
-                .upsert(stats, onConflict: "message_uuid, read_by", ignoreDuplicates: true)
-                .execute()
-              
-              await send(.didMarkAsRead(.success(stats)))
-            }
+              })
+            try await supabase
+              .from("messages_stats")
+              .upsert(stats, onConflict: "message_uuid, read_by", ignoreDuplicates: true)
+              .execute()
+            
+            await send(.didMarkAsRead(.success(stats)))
           } catch {
             await send(.didMarkAsRead(.failure(error)))
           }
@@ -100,7 +98,7 @@ struct Chat {
       case .didMarkAsRead(.success(let stats)):
         var temp = state.chat.messages
         stats.forEach { stat in
-          temp = temp?.map { message in
+          temp = temp.map { message in
             if message.uuid == stat.message_uuid {
               var tmp = message
               tmp.readBy.append(MessageStatsModel(
@@ -122,10 +120,7 @@ struct Chat {
         return .none
         
       case .insertMessage(let message):
-        if state.chat.messages == nil {
-          state.chat.messages = []
-        }
-        state.chat.messages?.append(message)
+        state.chat.messages.append(message)
         return .none
         
       case .messageChanged(let message):

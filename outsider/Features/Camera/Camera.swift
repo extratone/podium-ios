@@ -16,7 +16,7 @@ struct Camera {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var imageSelection: PhotosPickerItem?
     var selectedVideo: URL?
     var selectedPhoto: Data?

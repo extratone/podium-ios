@@ -14,18 +14,18 @@ struct NewMessage {
   
   @ObservableState
   struct State {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var query = ""
     var text = ""
     var isSearching = true
     var currentTokens = [FollowingModel]()
-    var tokens: [FollowingModel] { currentUser.following ?? [] }
+    var tokens: [FollowingModel] { currentUser.following }
     var suggested: [FollowingModel] {
-      Array(currentUser.following?
+      Array(currentUser.following
         .filter({ user in
           return !currentTokens.contains(where: { $0.following.uuid == user.following.uuid })
         })
-          .prefix(20) ?? [])
+          .prefix(20))
     }
     var searchResults: [FollowingModel] {
       if query.isEmpty {

@@ -22,7 +22,7 @@ struct Profile {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var user: UserModel
     var displayName: String = ""
     var posts: IdentifiedArrayOf<Post.State> = []
@@ -41,8 +41,8 @@ struct Profile {
     case upload(UIImage?)
     case didUpload
     case onSelectedTabIndexChanged(Tabs)
-    case fetchProfile
-    case didFetchProfile(Result<(UserModel, [PostModel]), Error>)
+    case fetchPosts
+    case didFetchPosts(Result<(UserModel, [PostModel]), Error>)
     case presentComments(PostModel)
     case presentProfile(UserModel)
     case onDisplayNameChanged(String)
@@ -79,7 +79,7 @@ struct Profile {
         }
         
       case .didFollow(.success(let user)):
-        state.currentUser.following?.append(FollowingModel(following: user))
+        state.currentUser.following.append(FollowingModel(following: user))
         state.isPending = false
         return .none
         
@@ -106,7 +106,7 @@ struct Profile {
         }
         
       case .didUnfollow(.success(let user)):
-        state.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.currentUser.following.removeAll(where: { $0.following.uuid == user.uuid })
         state.isPending = false
         return .none
         
@@ -157,11 +157,11 @@ struct Profile {
       case .initialize:
         state.displayName = state.user.display_name ?? ""
         return .run { send in
-          await send(.fetchProfile)
+          await send(.fetchPosts)
         }
         
-      case .fetchProfile:
-        return .run { [user = state.user] send in
+      case .fetchPosts:
+        return .run { [currentUser = state.currentUser, user = state.user] send in
           do {
             let user: UserModel = try await supabase
               .from("users")
@@ -171,7 +171,6 @@ struct Profile {
                   username,
                   display_name,
                   avatar_url,
-                  fcm_tokens,
                   following:users_following!users_following_user_uuid_fkey(
                     following:users!users_following_following_user_uuid_fkey(*)
                   )
@@ -191,6 +190,9 @@ struct Profile {
                   text,
                   created_at,
                   is_comment,
+                  commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                    count
+                  ),
                   author!inner(*),
                   media(*),
                   likes(*)
@@ -198,18 +200,19 @@ struct Profile {
               )
               .eq("author.uuid", value: user.uuid)
               .eq("is_comment", value: false)
+              .not("uuid", operator: .in, value: "(\(currentUser.mutedPosts.map({ $0.post_uuid.uuidString }).joined(separator: ",")))")
               .order("created_at", ascending: false)
               .limit(20)
               .execute()
               .value
             
-            await send(.didFetchProfile(.success((user, posts))))
+            await send(.didFetchPosts(.success((user, posts))))
           } catch {
-            await send(.didFetchProfile(.failure(error)))
+            await send(.didFetchPosts(.failure(error)))
           }
         }
         
-      case .didFetchProfile(.success((let user, let posts))):
+      case .didFetchPosts(.success((let user, let posts))):
         state.user = user
         state.posts.removeAll()
         var temp: IdentifiedArrayOf<Post.State> = []
@@ -223,7 +226,7 @@ struct Profile {
         state.posts = temp
         return .none
         
-      case .didFetchProfile(.failure(let error)):
+      case .didFetchPosts(.failure(let error)):
         print(error)
         return .none
         
@@ -274,6 +277,10 @@ struct Profile {
         return .none
         
       case .posts(.element(_, action: .didDelete(.success(let uuid)))):
+        state.posts.removeAll(where: { $0.post.uuid == uuid })
+        return .none
+        
+      case .posts(.element(_, action: .didMute(.success(let uuid)))):
         state.posts.removeAll(where: { $0.post.uuid == uuid })
         return .none
         

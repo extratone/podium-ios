@@ -29,7 +29,7 @@ struct MessagesView: View {
           ForEach(store
             .scope(state: \.chats, action: \.chats)
             .sorted(by: { prev, next in
-              return prev.chat.messages?.first?.created_at ?? .now > next.chat.messages?.first?.created_at ?? .now
+              return prev.chat.messages.first?.created_at ?? .now > next.chat.messages.first?.created_at ?? .now
             })
           ) { chatStore in
             Button {
@@ -57,7 +57,7 @@ struct MessagesView: View {
                     .fontWeight(.semibold)
                   
                   ZStack {
-                    switch chatStore.chat.messages?.first?.type {
+                    switch chatStore.chat.messages.first?.type {
                     case .photo:
                       HStack(spacing: 4) {
                         Image("icon-photo")
@@ -73,7 +73,7 @@ struct MessagesView: View {
                         Text("Sent video")
                       }
                     case .text:
-                      Text(chatStore.chat.messages?.first?.text ?? "")
+                      Text(chatStore.chat.messages.first?.text ?? "")
                         .lineLimit(1)
                     case nil:
                       Text("Message")
@@ -86,7 +86,7 @@ struct MessagesView: View {
                 
                 Spacer()
                 
-                Text(chatStore.chat.messages?.first?.created_at.timeAgoDisplay() ?? "")
+                Text(chatStore.chat.messages.first?.created_at.timeAgoDisplay() ?? "")
                   .font(.subheadline)
                   .foregroundStyle(.colorTextSecondary)
                 
@@ -133,14 +133,14 @@ struct MessagesView: View {
 
 #Preview {
   MessagesView(store: Store(initialState: Messages.State(
-    currentUser: Mocks.user,
+    currentUser: Mocks.currentUser,
     chats: [
       Chat.State(
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         chat: Mocks.chat
       ),
       Chat.State(
-        currentUser: Mocks.otherUser,
+        currentUser: Mocks.currentUser,
         chat: Mocks.chat1
       )
     ]

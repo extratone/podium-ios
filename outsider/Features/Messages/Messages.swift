@@ -20,7 +20,7 @@ struct Messages {
   
   @ObservableState
   struct State {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var chatsChannel: RealtimeChannelV2?
     var messagesChannel: RealtimeChannelV2?
     
@@ -126,7 +126,7 @@ struct Messages {
         
       case .newMessage(.presented(.send(let tokens, let message))):
         var members = tokens
-        members.append(FollowingModel(following: state.currentUser))
+        members.append(FollowingModel(following: state.currentUser.base))
         
         return .run { [members = members] send in
           do {
@@ -299,10 +299,7 @@ struct Messages {
         }
         
       case .onInsertMessage(.success(let message)):
-        if state.chats[id: message.chat_uuid]?.chat.messages == nil {
-          state.chats[id: message.chat_uuid]?.chat.messages = []
-        }
-        state.chats[id: message.chat_uuid]?.chat.messages?.append(message)
+        state.chats[id: message.chat_uuid]?.chat.messages.append(message)
         
         if let index = state.path.firstIndex(where: { $0.chat?.chat.uuid == message.chat_uuid }) {
           let id = state.path.ids[index]
@@ -382,10 +379,10 @@ struct Messages {
       
       case .path(.element(_, action: .chat(.didMarkAsRead(.success(let stats))))),
           .chats(.element(_, action: .didMarkAsRead(.success(let stats)))):
-        if let id = stats.first?.chat_uuid {
-          var temp = state.chats[id: id]?.chat.messages
+        if let id = stats.first?.chat_uuid,
+          var temp = state.chats[id: id]?.chat.messages {
           stats.forEach { stat in
-            temp = temp?.map { message in
+            temp = temp.map { message in
               if message.uuid == stat.message_uuid {
                 var tmp = message
                 tmp.readBy.append(MessageStatsModel(

@@ -21,7 +21,7 @@ struct Explore {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var query = ""
     var isSearching = false
     var searchResults: [UserModel] = []
@@ -114,11 +114,11 @@ struct Explore {
         return .none
         
       case .path(.element(_, action: .profile(.didFollow(.success(let user))))):
-        state.currentUser.following?.append(FollowingModel(following: user))
+        state.currentUser.following.append(FollowingModel(following: user))
         return .none
         
       case .path(.element(_, action: .profile(.didUnfollow(.success(let user))))):
-        state.currentUser.following?.removeAll(where: { $0.following.uuid == user.uuid })
+        state.currentUser.following.removeAll(where: { $0.following.uuid == user.uuid })
         return .none
         
       case .path(.element(_, action: .profile(.presentComments(let post)))):

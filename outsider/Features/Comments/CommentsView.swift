@@ -64,21 +64,21 @@ struct CommentsView: View {
 #Preview {
   CommentsView(
     store: Store(initialState: Comments.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       post: Post.State(
         size: .normal,
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         post: Mocks.post
       ),
       posts: [
         Post.State(
           size: .small,
-          currentUser: Mocks.user,
+          currentUser: Mocks.currentUser,
           post: Mocks.comment.comment
         ),
         Post.State(
           size: .small,
-          currentUser: Mocks.user,
+          currentUser: Mocks.currentUser,
           post: Mocks.comment1.comment
         )
       ]

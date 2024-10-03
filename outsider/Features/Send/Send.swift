@@ -16,7 +16,7 @@ struct Send {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var prompt = ""
     var tempImage: UIImage?
     var imageSelection: PhotosPickerItem?
@@ -116,16 +116,6 @@ struct Send {
               ))
               .execute()
             
-            try await supabase
-              .from("posts_comments")
-              .insert(PostModelInsert(
-                uuid: postUuid,
-                text: prompt,
-                author: currentUser.uuid,
-                is_comment: false
-              ))
-              .execute()
-            
             if tempImage != nil {
               try await supabase
                 .from("posts_media")
@@ -138,10 +128,15 @@ struct Send {
               .select(
                 """
                   uuid,
+                  is_comment,
                   text,
                   created_at,
                   author!inner(*),
-                  media(*)
+                  media(*),
+                  likes(*),
+                  commentsCount:posts_comments!posts_comments_post_uuid_fkey(
+                    count
+                  )
                 """
               )
               .eq("uuid", value: postUuid)

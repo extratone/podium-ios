@@ -23,7 +23,7 @@ struct Username {
   enum Action {
     case onUsernameChanged(String)
     case signUp
-    case didSignUp(Result<UserModel, Error>)
+    case didSignUp(Result<CurrentUserModel, Error>)
   }
   
   var body: some Reducer<State, Action> {
@@ -36,9 +36,9 @@ struct Username {
       case .signUp:
         return .run { [uuid = state.uuid, username = state.username] send in
           do {
-            let user: UserModel = try await supabase
+            let user: CurrentUserModel = try await supabase
               .from("users")
-              .insert(UserModel(
+              .insert(CurrentUserModelInsert(
                 uuid: uuid,
                 username: username,
                 display_name: nil,
@@ -52,6 +52,7 @@ struct Username {
                   display_name,
                   avatar_url,
                   fcm_tokens,
+                  mutedPosts:posts_muted(*),
                   following:users_following!users_following_user_uuid_fkey(
                     following:users!users_following_following_user_uuid_fkey(*)
                   )

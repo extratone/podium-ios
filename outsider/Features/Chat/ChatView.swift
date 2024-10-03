@@ -15,9 +15,9 @@ struct ChatView: View {
     VStack(spacing: 0) {
       ScrollView {
         VStack(spacing: 4) {
-          ForEach(store.chat.messages?.sorted(by: { prev, next in
+          ForEach(store.chat.messages.sorted(by: { prev, next in
             prev.created_at < next.created_at
-          }) ?? []) { message in
+          })) { message in
             HStack(alignment: .bottom) {
               if message.author_uuid == store.currentUser.uuid {
                 Spacer()
@@ -117,7 +117,7 @@ struct ChatView: View {
 #Preview {
   NavigationStack {
     ChatView(store: Store(initialState: Chat.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       chat: Mocks.chat
     )) {
       Chat()

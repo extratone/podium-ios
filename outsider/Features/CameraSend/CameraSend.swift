@@ -15,7 +15,7 @@ struct CameraSend {
   
   @ObservableState
   struct State: Equatable {
-    var currentUser: UserModel
+    var currentUser: CurrentUserModel
     var following: IdentifiedArrayOf<CameraSendRecipient.State>
     var addStory = false
     var mediaData: Data?
@@ -24,10 +24,10 @@ struct CameraSend {
       !following.filter({ $0.selected }).isEmpty || addStory
     }
     
-    init(currentUser: UserModel) {
+    init(currentUser: CurrentUserModel) {
       self.currentUser = currentUser
       var following: IdentifiedArrayOf<CameraSendRecipient.State> = []
-      currentUser.following?.forEach({ followingModel in
+      currentUser.following.forEach({ followingModel in
         following.append(CameraSendRecipient.State(
           following: followingModel
         ))
@@ -188,6 +188,7 @@ struct CameraSend {
             let model = ChatModel(
               uuid: chatUuid,
               users: members,
+              messages: [],
               discovery_string: members
                 .map({ $0.uuid.uuidString })
                 .sorted()
@@ -274,7 +275,7 @@ struct CameraSend {
             // Check if Chat exists for each recipient
             try await withThrowingTaskGroup(of: (UUID, Bool).self) { group in
               for recipient in recipients {
-                let members = [recipient, currentUser]
+                let members = [recipient, currentUser.base]
                 
                 group.addTask {
                   do {

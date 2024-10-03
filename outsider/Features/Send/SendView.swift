@@ -98,7 +98,7 @@ struct SendView: View {
 #Preview {
   SendView(
     store: Store(initialState: Send.State(
-      currentUser: Mocks.user
+      currentUser: Mocks.currentUser
     )) {
       Send()
     }

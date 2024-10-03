@@ -85,7 +85,7 @@ struct CameraSendView: View {
   Text("preview")
     .sheet(isPresented: .constant(true), content: {
       CameraSendView(store: Store(initialState: CameraSend.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.currentUser
       )) {
         CameraSend()
       })

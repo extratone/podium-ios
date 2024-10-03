@@ -90,31 +90,32 @@ struct TabsView: View {
 #Preview {
   TabsView(
     store: Store(initialState: Tabs.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       camera: Camera.State(
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         cameraSend: CameraSend.State(
-          currentUser: Mocks.user
+          currentUser: Mocks.currentUser
         )
       ),
       home: Home.State(
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         send: Send.State(
-          currentUser: Mocks.user
+          currentUser: Mocks.currentUser
         ),
         stories: Stories.State(
-          currentUser: Mocks.user
+          currentUser: Mocks.currentUser
         )
       ),
       explore: Explore.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.currentUser
       ),
       messages: Messages.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.currentUser
       ),
       currentProfile: CurrentProfile.State(
+        currentUser: Mocks.currentUser,
         profile: Profile.State(
-          currentUser: Mocks.user,
+          currentUser: Mocks.currentUser,
           user: Mocks.user
         )
       )

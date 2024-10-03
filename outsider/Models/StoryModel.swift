@@ -20,7 +20,7 @@ struct StoryModel: Codable, Equatable, Identifiable, Hashable {
   let url: URL
   let created_at: Date
   let type: MediaType
-  var stats: [StoryStatsModel]?
+  var stats: [StoryStatsModel]
 }
 
 struct StoryModelInsert: Codable {

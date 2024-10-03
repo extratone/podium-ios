@@ -214,9 +214,9 @@ struct CameraView: View {
 #Preview {
   CameraView(
     store: Store(initialState: Camera.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       cameraSend: CameraSend.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.currentUser
       )
     )) {
       Camera()

@@ -102,7 +102,7 @@ struct ProfileView: View {
           
           if !store.isCurrent {
             Button {
-              if let following = store.currentUser.following, following.contains(where: { $0.following.uuid == store.user.uuid }) {
+              if store.currentUser.following.contains(where: { $0.following.uuid == store.user.uuid }) {
                 store.send(.unfollow(store.user))
               } else {
                 store.send(.follow(store.user))
@@ -110,7 +110,7 @@ struct ProfileView: View {
             } label: {
               HStack {
                 Spacer()
-                if let following = store.currentUser.following, following.contains(where: { $0.following.uuid == store.user.uuid }) {
+                if store.currentUser.following.contains(where: { $0.following.uuid == store.user.uuid }) {
                   Text("Unfollow")
                 } else {
                   Text("Follow")
@@ -181,11 +181,11 @@ struct ProfileView: View {
 #Preview {
   ProfileView(
     store: Store(initialState: Profile.State(
-      currentUser: Mocks.user,
+      currentUser: Mocks.currentUser,
       user: Mocks.user,
       posts: [Post.State(
         size: .normal,
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         post: Mocks.post
       )]
     )) {

@@ -71,6 +71,9 @@ struct SignInView: View {
         }
       }
       .padding()
+      .onAppear {
+        store.send(.reset)
+      }
     } destination: { store in
       switch store.case {
       case let .username(store):

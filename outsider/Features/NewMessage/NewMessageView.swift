@@ -106,7 +106,7 @@ struct NewMessageView: View {
   Text("preview")
     .sheet(isPresented: .constant(true), content: {
       NewMessageView(store: Store(initialState: NewMessage.State(
-        currentUser: Mocks.user
+        currentUser: Mocks.currentUser
       )) {
         NewMessage()
       })

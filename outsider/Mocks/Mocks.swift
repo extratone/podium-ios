@@ -8,7 +8,7 @@
 import Foundation
 
 class Mocks {
-  static let user = UserModel(
+  static let currentUser = CurrentUserModel(
     uuid: UUID(),
     username: "username",
     display_name: "Display Name",
@@ -19,14 +19,32 @@ class Mocks {
         uuid: UUID(),
         username: "test",
         display_name: "Test User",
-        fcm_tokens: [],
         avatar_url: nil
       )),
       FollowingModel(following: UserModel(
         uuid: UUID(),
         username: "test1",
         display_name: nil,
-        fcm_tokens: [],
+        avatar_url: nil
+      ))
+    ]
+  )
+  static let user = UserModel(
+    uuid: UUID(),
+    username: "username",
+    display_name: "Display Name",
+    avatar_url: nil,
+    following: [
+      FollowingModel(following: UserModel(
+        uuid: UUID(),
+        username: "test",
+        display_name: "Test User",
+        avatar_url: nil
+      )),
+      FollowingModel(following: UserModel(
+        uuid: UUID(),
+        username: "test1",
+        display_name: nil,
         avatar_url: nil
       ))
     ]
@@ -35,7 +53,6 @@ class Mocks {
     uuid: UUID(),
     username: "username2",
     display_name: "Display Name 2",
-    fcm_tokens: [],
     avatar_url: nil,
     following: []
   )
@@ -44,22 +61,32 @@ class Mocks {
     url: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
     post_uuid: UUID()
   )
-  static let comment = CommentModel(comment: PostModel(
-    uuid: UUID(),
-    created_at: .now,
-    text: "Hello!",
-    author: user,
-    media: nil,
-    is_comment: true
-  ))
-  static let comment1 = CommentModel(comment: PostModel(
-    uuid: UUID(),
-    created_at: .now,
-    text: "Hello!",
-    author: user,
-    media: nil,
-    is_comment: true
-  ))
+  static let comment = CommentModel(
+    comment: PostModel(
+      uuid: UUID(),
+      created_at: .now,
+      text: "Hello!",
+      author: user,
+      media: [],
+      comments: [],
+      commentsCount: [],
+      is_comment: true
+    ),
+    created_at: .now
+  )
+  static let comment1 = CommentModel(
+    comment: PostModel(
+      uuid: UUID(),
+      created_at: .now,
+      text: "Hello!",
+      author: user,
+      media: [],
+      comments: [],
+      commentsCount: [],
+      is_comment: true
+    ),
+    created_at: .now
+  )
   static let postText = PostModel(
     uuid: UUID(),
     created_at: Date.distantPast,
@@ -68,7 +95,7 @@ class Mocks {
     media: [],
     likes: [],
     comments: [comment, comment1],
-    commentsPlain: [],
+    commentsCount: [],
     is_comment: false
   )
   static let post = PostModel(
@@ -84,7 +111,7 @@ class Mocks {
     ],
     likes: [],
     comments: [comment, comment1],
-    commentsPlain: [],
+    commentsCount: [],
     is_comment: false
   )
   static let story = StoryModel(
@@ -93,7 +120,7 @@ class Mocks {
     url: URL(string: "https://images.unsplash.com/photo-1566264956500-0549ed17e161?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9")!,
     created_at: .now,
     type: .photo,
-    stats: nil
+    stats: []
   )
   static let chat = ChatModel(
     uuid: UUID(),

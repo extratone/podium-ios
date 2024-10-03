@@ -82,9 +82,9 @@ struct PostView: View {
                   .multilineTextAlignment(.leading)
               }
               
-              if let mediaItems = store.post.media, !mediaItems.isEmpty {
+              if !store.post.media.isEmpty {
                 HStack {
-                  ForEach(mediaItems) { mediaItem in
+                  ForEach(store.post.media) { mediaItem in
                     Button {
                       store.send(.presentMedia(mediaItem))
                     } label: {
@@ -133,7 +133,7 @@ struct PostView: View {
                     .frame(width: 16, height: 16)
                     .foregroundColor(.colorTextSecondary)
                   
-                  Text("\(store.post.commentsPlain?.count ?? 0)")
+                  Text("\(store.post.commentsCount.first?.count ?? 0)")
                     .font(.caption)
                     .foregroundStyle(.colorTextSecondary)
                     .fontWeight(.medium)
@@ -158,7 +158,7 @@ struct PostView: View {
                       .frame(width: 16, height: 16)
                       .foregroundColor(store.isLiked ? .colorRed : .colorTextSecondary)
                     
-                    Text("\(store.post.likes?.count ?? 0)")
+                    Text("\(store.post.likes.count)")
                       .font(.caption)
                       .foregroundStyle(.colorTextSecondary)
                       .fontWeight(.medium)
@@ -170,15 +170,23 @@ struct PostView: View {
                 Spacer()
                 
                 Menu {
-                  Button(action: { }) {
-                    Label("Copy link", systemImage: "link")
-                  }
+//                  Button(action: { }) {
+//                    Label("Copy link", systemImage: "link")
+//                  }
                   
                   if store.post.author.uuid == store.currentUser.uuid {
                     Button(role: .destructive, action: { store.send(.delete) }) {
                       Label("Delete", systemImage: "trash")
                     }
                   } else {
+                    Button(action: { store.send(.report) }) {
+                      Label("Report post", systemImage: "exclamationmark.bubble")
+                    }
+                    
+                    Button(action: { store.send(.mute) }) {
+                      Label("Mute post", systemImage: "circle.slash")
+                    }
+                    
                     Button(action: { }) {
                       Label("Block author", systemImage: "person.slash")
                     }
@@ -209,7 +217,7 @@ struct PostView: View {
     PostView(
       store: Store(initialState: Post.State(
         size: .normal,
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         post: Mocks.postText
       )) {
         Post()
@@ -224,7 +232,7 @@ struct PostView: View {
     PostView(
       store: Store(initialState: Post.State(
         size: .normal,
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         post: Mocks.post
       )) {
         Post()
@@ -239,7 +247,7 @@ struct PostView: View {
     PostView(
       store: Store(initialState: Post.State(
         size: .small,
-        currentUser: Mocks.user,
+        currentUser: Mocks.currentUser,
         post: Mocks.post
       )) {
         Post()
